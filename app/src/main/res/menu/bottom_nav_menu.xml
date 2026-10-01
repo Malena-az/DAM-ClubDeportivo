@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_inicio" android:icon="@drawable/ic_inicio" android:title="Inicio" />
+    <item android:id="@+id/nav_socios" android:icon="@drawable/ic_socios" android:title="Socios" />
+    <item android:id="@+id/nav_vencimiento" android:icon="@drawable/ic_vencimiento" android:title="Vencimiento" />
+    <item android:id="@+id/nav_perfil" android:icon="@drawable/ic_perfil" android:title="Perfil" />
+</menu>
