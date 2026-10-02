@@ -7,10 +7,10 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/Theme.ClubDeportivo"
+        android:label="DAM2CGRUPO4"
         android:roundIcon="@mipmap/ic_launcher_round"
-        android:supportsRtl="true">
+        android:supportsRtl="true"
+        android:theme="@style/Theme.DAM2CGRUPO4">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -22,16 +22,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AltaSocioActivity" android:exported="false"
+            android:name=".MenuActivity"
+            android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".AltaNoSocioActivity" android:exported="false"
+            android:name=".AltaSocioActivity"
+            android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".registro.MenuActivity" android:exported="false" />
-        <activity android:name=".consultas.ListadoSociosActivity" android:exported="false" />
-        <activity android:name=".consultas.VencimientosActivity" android:exported="false" />
-        <activity android:name=".consultas.PerfilActivity" android:exported="false" />
-
+        <activity
+            android:name=".AltaNoSocioActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

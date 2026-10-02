@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#96969A">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- ENCABEZADO -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/btnMenu"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="☰"
+                android:textSize="20sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#96969A"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Alta socio"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:gravity="center"/>
+
+            <Space
+                android:layout_width="40dp"
+                android:layout_height="40dp"/>
+
+        </LinearLayout>
+
+
+        <!-- NOMBRE -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nombre"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#000000"/>
+
+        <EditText
+            android:id="@+id/etNombre"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:hint="Escribe aquí..."
+            android:textSize="13sp"
+            android:gravity="center"
+            android:background="@drawable/bg_input"
+            android:layout_marginBottom="6dp"/>
+
+
+        <!-- APELLIDO -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Apellido"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#000000"/>
+
+        <EditText
+            android:id="@+id/etApellido"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:hint="Escribe aquí..."
+            android:textSize="13sp"
+            android:gravity="center"
+            android:background="@drawable/bg_input"
+            android:layout_marginBottom="6dp"/>
+
+
+        <!-- DNI -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="DNI"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#000000"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="6dp">
+
+            <EditText
+                android:id="@+id/etDni"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="Escribe aquí..."
+                android:textSize="13sp"
+                android:gravity="center"
+                android:inputType="number"
+                android:background="@drawable/bg_input"/>
+
+            <Button
+                android:id="@+id/btnVerificarDni"
+                android:layout_width="85dp"
+                android:layout_height="match_parent"
+                android:text="Verificar"
+                android:textSize="10sp"
+                android:textColor="#555555"
+                android:backgroundTint="#EEEEEE"/>
+
+        </LinearLayout>
+
+
+        <!-- TELÉFONO -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Teléfono"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#000000"/>
+
+        <EditText
+            android:id="@+id/etTelefono"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:hint="Escribe aquí..."
+            android:textSize="13sp"
+            android:gravity="center"
+            android:inputType="phone"
+            android:background="@drawable/bg_input"
+            android:layout_marginBottom="6dp"/>
+
+
+        <!-- EMAIL -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#000000"/>
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:hint="Escribe aquí..."
+            android:textSize="13sp"
+            android:gravity="center"
+            android:inputType="textEmailAddress"
+            android:background="@drawable/bg_input"
+            android:layout_marginBottom="6dp"/>
+
+
+        <!-- DIRECCIÓN -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dirección"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#000000"/>
+
+        <EditText
+            android:id="@+id/etDireccion"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:hint="Escribe aquí..."
+            android:textSize="13sp"
+            android:gravity="center"
+            android:background="@drawable/bg_input"
+            android:layout_marginBottom="6dp"/>
+
+
+        <!-- FECHA DE NACIMIENTO -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fecha de nacimiento"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#000000"/>
+
+        <EditText
+            android:id="@+id/etFechaNacimiento"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/bg_input"
+            android:focusable="false"
+            android:gravity="center"
+            android:hint="Escribe aquí..."
+            android:textSize="13sp" />
+
+
+        <!-- APTO MÉDICO -->
+
+        <CheckBox
+            android:id="@+id/cbAptoMedico"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Apto médico"
+            android:textSize="13sp"
+            android:textColor="#000000"/>
+
+
+        <!-- COBRO -->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cobro de primera cuota"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_marginTop="4dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Importe *"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#000000"/>
+
+        <EditText
+            android:id="@+id/etImporte"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:hint="$ 0,00"
+            android:textSize="13sp"
+            android:gravity="center"
+            android:inputType="numberDecimal"
+            android:background="@drawable/bg_input"
+            android:layout_marginBottom="6dp"/>
+
+
+        <!-- MEDIO DE PAGO Y CUOTAS -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Medio de pago"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"/>
+
+                <Spinner
+                    android:id="@+id/spMedioPago"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:background="@drawable/bg_input"/>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="6dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cuotas"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"/>
+
+                <Spinner
+                    android:id="@+id/spCuotas"
+                    android:layout_width="match_parent"
+                    android:layout_height="38dp"
+                    android:background="@drawable/bg_input"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+        <!-- BOTONES -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="12dp">
+
+            <Button
+                android:id="@+id/btnGuardarSocio"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Guardar"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:backgroundTint="#2E8B32"
+                android:layout_marginEnd="8dp"/>
+
+            <Button
+                android:id="@+id/btnCancelarSocio"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="Cancelar"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:backgroundTint="#111111"
+                android:layout_marginStart="8dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
