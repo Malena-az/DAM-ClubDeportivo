@@ -18,6 +18,7 @@ import com.clubdeportivo.app.data.Socio
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import android.content.res.ColorStateList
 
 class CobrarCuotaActivity : AppCompatActivity() {
 
@@ -40,9 +41,16 @@ class CobrarCuotaActivity : AppCompatActivity() {
         val spCuotas = findViewById<Spinner>(R.id.spCuotas)
 
         // Opciones de los spinners (la posición 0 es el "placeholder")
-        val medios = listOf("Seleccionar...", "Efectivo", "Tarjeta de crédito", "Tarjeta de débito", "Transferencia")
+        val medios = listOf(
+            "Seleccionar...",
+            "Efectivo",
+            "Tarjeta de crédito",
+            "Tarjeta de débito",
+            "Transferencia"
+        )
         val cuotas = listOf("Seleccionar...", "1", "3", "6")
-        spMedioPago.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, medios)
+        spMedioPago.adapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, medios)
         spCuotas.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, cuotas)
 
         findViewById<TextView>(R.id.btnVolver).setOnClickListener { finish() }
@@ -64,7 +72,9 @@ class CobrarCuotaActivity : AppCompatActivity() {
             socioActual = socio
             tvNombre.text = "${socio.nombre} ${socio.apellido}"
             tvEstado.text = socio.estado
-            tvEstado.setTextColor(if (socio.estado == "Activo") Color.parseColor("#2E7D32") else Color.parseColor("#C62828"))
+            val colorChip =
+                if (socio.estado == "Activo") R.color.estado_activo else R.color.estado_vencido
+            tvEstado.backgroundTintList = ColorStateList.valueOf(getColor(colorChip))
             tvNroSocio.text = "N° Socio: ${socio.id}"
             tvDniSocio.text = "DNI: ${socio.dni}"
             tvVence.text = "Vence: ${socio.fechaVencimiento}"

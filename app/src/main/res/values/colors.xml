@@ -2,4 +2,13 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="club_green">#2E7D32</color>
+    <color name="club_bg_gray">#8E8E93</color>
+    <color name="club_card">#D9D9D9</color>
+    <color name="club_dark">#212121</color>
+    <color name="club_text_gray">#5F5A5A</color>
+    <color name="club_hint">#989393</color>
+    <color name="club_off_white">#FAFAFA</color>
+    <color name="estado_activo">#81B984</color>
+    <color name="estado_vencido">#D32F2F</color>
 </resources>
