@@ -55,4 +55,9 @@ class VencimientoAdapter(private var lista: List<Socio>) :
     }
 
     override fun getItemCount(): Int = lista.size
+
+    fun actualizar(nuevaLista: List<Socio>) {
+        lista = nuevaLista
+        notifyDataSetChanged()
+    }
 }

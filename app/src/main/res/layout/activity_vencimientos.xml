@@ -177,11 +177,22 @@
                     android:layout_marginTop="4dp" />
             </LinearLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvVencimientos"
+            <LinearLayout
+                android:id="@+id/layoutListaVencimientos"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
+                android:orientation="vertical" />
+
+            <Button
+                android:id="@+id/btnVerMas"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="8dp"
+                android:text="Ver más"
+                android:textSize="13sp"
+                android:textColor="@color/texto_principal"
+                android:backgroundTint="@color/fondo_input"
+                android:visibility="gone" />
 
         </LinearLayout>
     </ScrollView>
