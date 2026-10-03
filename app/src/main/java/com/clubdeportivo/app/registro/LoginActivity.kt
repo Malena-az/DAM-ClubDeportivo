@@ -7,9 +7,10 @@ import android.widget.Toast
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.clubdeportivo.app.R
 
 
-class MainActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     private val usuarioCorrecto = "admin"
     private val passwordCorrecto = "1234"
@@ -17,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_login)
 
         val etUsuario = findViewById<EditText>(R.id.etUsuario)
         val etContrasena = findViewById<EditText>(R.id.etContrasena)

@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AlertDialog
+import com.clubdeportivo.app.R
 
 class AltaNoSocioActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,6 +18,7 @@ class AltaNoSocioActivity : AppCompatActivity() {
         val btnVolver = findViewById<Button>(R.id.btnVolver)
         val btnGuardar = findViewById<Button>(R.id.btnGuardarNoSocio)
         val btnLimpiar = findViewById<Button>(R.id.btnLimpiarNoSocio)
+        val btnVerificarDniNoSocio = findViewById<Button>(R.id.btnVerificarDniNoSocio)
 
         val etNombre = findViewById<EditText>(R.id.etNombreNoSocio)
         val etApellido = findViewById<EditText>(R.id.etApellidoNoSocio)
@@ -26,6 +28,19 @@ class AltaNoSocioActivity : AppCompatActivity() {
 
         btnVolver.setOnClickListener {
             finish()
+        }
+
+        btnVerificarDniNoSocio.setOnClickListener {
+            val dni = etDni.text.toString().trim()
+            if (dni.isEmpty()) {
+                etDni.error = "Ingresa el DNI"
+                etDni.requestFocus()
+            } else if (!dni.matches(Regex("^[0-9]{7,8}$"))) {
+                etDni.error = "El DNI debe tener entre 7 y 8 dígitos"
+                etDni.requestFocus()
+            } else {
+                Toast.makeText(this, "DNI verificado correctamente", Toast.LENGTH_SHORT).show()
+            }
         }
 
         btnGuardar.setOnClickListener {

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="medios_pago">
+        <item>Seleccionar</item>
+        <item>Efectivo</item>
+        <item>Tarjeta de débito</item>
+        <item>Tarjeta de crédito</item>
+        <item>Transferencia</item>
+    </string-array>
+    <string-array name="cuotas">
+        <item>Seleccionar</item>
+        <item>1</item>
+        <item>3</item>
+        <item>6</item>
+        <item>12</item>
+    </string-array>
+</resources>

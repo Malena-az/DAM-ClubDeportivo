@@ -25,14 +25,19 @@ class MenuActivity : AppCompatActivity() {
         val formato = SimpleDateFormat("d 'de' MMMM 'de' yyyy", Locale("es", "ES"))
         txtFecha.text = formato.format(Date())
 
-        val tarjetas = listOf(
-            R.id.cardRegistrarSocio,
-            R.id.cardRegistrarNoSocio,
+        findViewById<View>(R.id.cardRegistrarSocio).setOnClickListener {
+            startActivity(Intent(this, AltaSocioActivity::class.java))
+        }
+        findViewById<View>(R.id.cardRegistrarNoSocio).setOnClickListener {
+            startActivity(Intent(this, AltaNoSocioActivity::class.java))
+        }
+
+        val tarjetasDesarrollo = listOf(
             R.id.cardCobrarCuota,
             R.id.cardCobrarActividad,
             R.id.cardCarnet
         )
-        for (id in tarjetas) {
+        for (id in tarjetasDesarrollo) {
             findViewById<View>(id).setOnClickListener {
                 Toast.makeText(this, "Función en desarrollo", Toast.LENGTH_SHORT).show()
             }

@@ -1,7 +1,7 @@
 package com.clubdeportivo.app.registro
 
-import android.R
 import android.app.DatePickerDialog
+import com.clubdeportivo.app.R
 import android.os.Bundle
 import android.util.Patterns
 import android.widget.ArrayAdapter
@@ -24,6 +24,7 @@ class AltaSocioActivity : AppCompatActivity() {
         val btnMenu = findViewById<Button>(R.id.btnMenu)
         val btnGuardar = findViewById<Button>(R.id.btnGuardarSocio)
         val btnCancelar = findViewById<Button>(R.id.btnCancelarSocio)
+        val btnVerificarDni = findViewById<Button>(R.id.btnVerificarDni)
 
         val etNombre = findViewById<EditText>(R.id.etNombre)
         val etApellido = findViewById<EditText>(R.id.etApellido)
@@ -39,15 +40,15 @@ class AltaSocioActivity : AppCompatActivity() {
 
         // Cargar opciones de los Spinners
         val adapterMedioPago = ArrayAdapter.createFromResource(
-            this, R.array.medios_pago, R.layout.simple_spinner_item
+            this, R.array.medios_pago, android.R.layout.simple_spinner_item
         )
-        adapterMedioPago.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        adapterMedioPago.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spMedioPago.adapter = adapterMedioPago
 
         val adapterCuotas = ArrayAdapter.createFromResource(
-            this, R.array.cuotas, R.layout.simple_spinner_item
+            this, R.array.cuotas, android.R.layout.simple_spinner_item
         )
-        adapterCuotas.setDropDownViewResource(R.layout.simple_spinner_dropdown_item)
+        adapterCuotas.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spCuotas.adapter = adapterCuotas
 
         // Selector de fecha de nacimiento
@@ -73,6 +74,19 @@ class AltaSocioActivity : AppCompatActivity() {
 
         btnMenu.setOnClickListener {
             finish()
+        }
+
+        btnVerificarDni.setOnClickListener {
+            val dni = etDni.text.toString().trim()
+            if (dni.isEmpty()) {
+                etDni.error = "Ingresa el DNI"
+                etDni.requestFocus()
+            } else if (!dni.matches(Regex("^[0-9]{7,8}$"))) {
+                etDni.error = "El DNI debe tener entre 7 y 8 dígitos"
+                etDni.requestFocus()
+            } else {
+                Toast.makeText(this, "DNI verificado correctamente", Toast.LENGTH_SHORT).show()
+            }
         }
 
         btnCancelar.setOnClickListener {
