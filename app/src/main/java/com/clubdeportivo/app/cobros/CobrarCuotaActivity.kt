@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import android.content.res.ColorStateList
+import android.widget.AdapterView
 
 class CobrarCuotaActivity : AppCompatActivity() {
 
@@ -52,6 +53,20 @@ class CobrarCuotaActivity : AppCompatActivity() {
         spMedioPago.adapter =
             ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, medios)
         spCuotas.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, cuotas)
+
+        // Las cuotas solo aplican a tarjeta de crédito
+        fun actualizarCuotas() {
+            val esCredito = spMedioPago.selectedItem.toString() == "Tarjeta de crédito"
+            spCuotas.isEnabled = esCredito
+            spCuotas.alpha = if (esCredito) 1f else 0.5f
+            if (!esCredito) spCuotas.setSelection(1)   // posición 1 = "1" cuota
+        }
+        spMedioPago.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                actualizarCuotas()
+            }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
 
         findViewById<TextView>(R.id.btnVolver).setOnClickListener { finish() }
 
@@ -98,7 +113,7 @@ class CobrarCuotaActivity : AppCompatActivity() {
                 toast("Seleccioná un medio de pago")
                 return@setOnClickListener
             }
-            if (spCuotas.selectedItemPosition == 0) {
+            if (spCuotas.isEnabled && spCuotas.selectedItemPosition == 0) {
                 toast("Seleccioná la cantidad de cuotas")
                 return@setOnClickListener
             }
