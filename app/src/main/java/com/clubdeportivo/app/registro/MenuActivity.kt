@@ -31,11 +31,12 @@ class MenuActivity : AppCompatActivity() {
         findViewById<View>(R.id.cardRegistrarNoSocio).setOnClickListener {
             startActivity(Intent(this, AltaNoSocioActivity::class.java))
         }
-
+        findViewById<View>(R.id.cardCarnet).setOnClickListener {
+            startActivity(Intent(this, com.clubdeportivo.app.consultas.CarnetActivity::class.java))
+        }
         val tarjetasDesarrollo = listOf(
             R.id.cardCobrarCuota,
             R.id.cardCobrarActividad,
-            R.id.cardCarnet
         )
         for (id in tarjetasDesarrollo) {
             findViewById<View>(id).setOnClickListener {

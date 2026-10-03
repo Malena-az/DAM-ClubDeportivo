@@ -2,6 +2,7 @@
 
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#96969A">
@@ -61,6 +62,8 @@
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:hint="Escribe aquí..."
+            android:textColor="@color/texto_principal"
+            android:textColorHint="@color/texto_secundario"
             android:gravity="center"
             android:background="@drawable/bg_input"
             android:layout_marginBottom="8dp"/>
@@ -81,6 +84,8 @@
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:hint="Escribe aquí..."
+            android:textColor="@color/texto_principal"
+            android:textColorHint="@color/texto_secundario"
             android:gravity="center"
             android:background="@drawable/bg_input"
             android:layout_marginBottom="8dp"/>
@@ -108,6 +113,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="Escribe aquí..."
+                android:textColor="@color/texto_principal"
+                android:textColorHint="@color/texto_secundario"
                 android:gravity="center"
                 android:inputType="number"
                 android:background="@drawable/bg_input"/>
@@ -139,6 +146,8 @@
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:hint="Escribe aquí..."
+            android:textColor="@color/texto_principal"
+            android:textColorHint="@color/texto_secundario"
             android:gravity="center"
             android:inputType="phone"
             android:background="@drawable/bg_input"
@@ -161,6 +170,8 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:hint="Escribe aquí..."
+            android:textColor="@color/texto_principal"
+            android:textColorHint="@color/texto_secundario"
             android:gravity="top|start"
             android:padding="12dp"
             android:inputType="textMultiLine"

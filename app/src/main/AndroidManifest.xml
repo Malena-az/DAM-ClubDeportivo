@@ -31,6 +31,8 @@
         <activity android:name=".consultas.ListadoSociosActivity" android:exported="false" />
         <activity android:name=".consultas.VencimientosActivity" android:exported="false" />
         <activity android:name=".consultas.PerfilActivity" android:exported="false" />
+        <activity android:name=".consultas.DetalleSocioActivity" android:exported="false" />
+        <activity android:name=".consultas.CarnetActivity" android:exported="false" />
 
     </application>
 

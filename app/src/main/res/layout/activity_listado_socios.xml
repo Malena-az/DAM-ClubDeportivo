@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/fondo_medio">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,13 +14,29 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Listado de Socios"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="16dp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/btnVolver"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:text="←"
+                android:textSize="28sp"
+                android:textColor="@color/texto_principal"
+                android:backgroundTint="@color/fondo_medio"/>
+
+            <TextView
+                style="@style/EstiloTitulo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Listado de Socios"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,30 +46,32 @@
 
             <EditText
                 android:id="@+id/edtBuscar"
+                style="@style/EstiloInput"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/alto_input"
                 android:layout_weight="1"
                 android:hint="Buscar por DNI"
-                android:inputType="text"/>
+                android:inputType="text" />
 
             <Button
                 android:id="@+id/btnBuscar"
+                android:backgroundTint="@color/black"
+                android:textColor="@color/white"
+                android:textStyle="bold"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/alto_boton"
                 android:layout_marginStart="8dp"
-                android:text="Buscar"
-                android:backgroundTint="#2E7D32"
-                android:textColor="#FFFFFF"/>
+                android:text="Buscar" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/txtMostrando"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mostrando 7 socios"
+            android:text="Mostrando 100 socios"
             android:gravity="end"
-            android:textSize="12sp"
-            android:textColor="#666666"
+            android:textSize="@dimen/texto_insignia"
+            android:textColor="@color/texto_principal"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="8dp" />
 
@@ -61,12 +81,28 @@
             android:layout_height="0dp"
             android:layout_weight="1" />
 
+        <TextView
+            android:id="@+id/txtSinResultados"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No se encontraron socios"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/texto_principal"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone" />
+
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
+        app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu" />
 
 </LinearLayout>

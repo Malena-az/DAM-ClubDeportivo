@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="#96969A">
 
     <LinearLayout
@@ -11,8 +11,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="12dp">
-
-        <!-- ENCABEZADO -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,11 +40,7 @@
             <Space
                 android:layout_width="40dp"
                 android:layout_height="40dp"/>
-
         </LinearLayout>
-
-
-        <!-- NOMBRE -->
 
         <TextView
             android:layout_width="match_parent"
@@ -62,12 +56,11 @@
             android:layout_height="38dp"
             android:hint="Escribe aquí..."
             android:textSize="13sp"
+            android:textColor="@color/texto_principal"
+            android:textColorHint="@color/texto_secundario"
             android:gravity="center"
             android:background="@drawable/bg_input"
             android:layout_marginBottom="6dp"/>
-
-
-        <!-- APELLIDO -->
 
         <TextView
             android:layout_width="match_parent"
@@ -83,12 +76,11 @@
             android:layout_height="38dp"
             android:hint="Escribe aquí..."
             android:textSize="13sp"
+            android:textColor="@color/texto_principal"
+            android:textColorHint="@color/texto_secundario"
             android:gravity="center"
             android:background="@drawable/bg_input"
             android:layout_marginBottom="6dp"/>
-
-
-        <!-- DNI -->
 
         <TextView
             android:layout_width="match_parent"
@@ -111,6 +103,8 @@
                 android:layout_weight="1"
                 android:hint="Escribe aquí..."
                 android:textSize="13sp"
+                android:textColor="@color/texto_principal"
+                android:textColorHint="@color/texto_secundario"
                 android:gravity="center"
                 android:inputType="number"
                 android:background="@drawable/bg_input"/>
@@ -123,11 +117,7 @@
                 android:textSize="10sp"
                 android:textColor="#555555"
                 android:backgroundTint="#EEEEEE"/>
-
         </LinearLayout>
-
-
-        <!-- TELÉFONO -->
 
         <TextView
             android:layout_width="match_parent"
@@ -143,13 +133,12 @@
             android:layout_height="38dp"
             android:hint="Escribe aquí..."
             android:textSize="13sp"
+            android:textColor="@color/texto_principal"
+            android:textColorHint="@color/texto_secundario"
             android:gravity="center"
             android:inputType="phone"
             android:background="@drawable/bg_input"
             android:layout_marginBottom="6dp"/>
-
-
-        <!-- EMAIL -->
 
         <TextView
             android:layout_width="match_parent"
@@ -165,13 +154,12 @@
             android:layout_height="38dp"
             android:hint="Escribe aquí..."
             android:textSize="13sp"
+            android:textColor="@color/texto_principal"
+            android:textColorHint="@color/texto_secundario"
             android:gravity="center"
             android:inputType="textEmailAddress"
             android:background="@drawable/bg_input"
             android:layout_marginBottom="6dp"/>
-
-
-        <!-- DIRECCIÓN -->
 
         <TextView
             android:layout_width="match_parent"
@@ -187,12 +175,11 @@
             android:layout_height="38dp"
             android:hint="Escribe aquí..."
             android:textSize="13sp"
+            android:textColor="@color/texto_principal"
+            android:textColorHint="@color/texto_secundario"
             android:gravity="center"
             android:background="@drawable/bg_input"
             android:layout_marginBottom="6dp"/>
-
-
-        <!-- FECHA DE NACIMIENTO -->
 
         <TextView
             android:layout_width="match_parent"
@@ -206,15 +193,14 @@
             android:id="@+id/etFechaNacimiento"
             android:layout_width="match_parent"
             android:layout_height="38dp"
-            android:layout_marginBottom="6dp"
-            android:background="@drawable/bg_input"
-            android:focusable="false"
-            android:gravity="center"
             android:hint="Escribe aquí..."
-            android:textSize="13sp" />
-
-
-        <!-- APTO MÉDICO -->
+            android:textSize="13sp"
+            android:textColor="@color/texto_principal"
+            android:textColorHint="@color/texto_secundario"
+            android:gravity="center"
+            android:focusable="false"
+            android:background="@drawable/bg_input"
+            android:layout_marginBottom="6dp"/>
 
         <CheckBox
             android:id="@+id/cbAptoMedico"
@@ -223,9 +209,6 @@
             android:text="Apto médico"
             android:textSize="13sp"
             android:textColor="#000000"/>
-
-
-        <!-- COBRO -->
 
         <TextView
             android:layout_width="match_parent"
@@ -250,13 +233,12 @@
             android:layout_height="38dp"
             android:hint="$ 0,00"
             android:textSize="13sp"
+            android:textColor="@color/texto_principal"
+            android:textColorHint="@color/texto_secundario"
             android:gravity="center"
             android:inputType="numberDecimal"
             android:background="@drawable/bg_input"
             android:layout_marginBottom="6dp"/>
-
-
-        <!-- MEDIO DE PAGO Y CUOTAS -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -283,9 +265,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="38dp"
                     android:background="@drawable/bg_input"/>
-
             </LinearLayout>
-
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -307,13 +287,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="38dp"
                     android:background="@drawable/bg_input"/>
-
             </LinearLayout>
-
         </LinearLayout>
-
-
-        <!-- BOTONES -->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -343,7 +318,6 @@
                 android:textStyle="bold"
                 android:backgroundTint="#111111"
                 android:layout_marginStart="8dp"/>
-
         </LinearLayout>
 
     </LinearLayout>

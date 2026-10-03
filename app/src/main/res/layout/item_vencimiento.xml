@@ -1,75 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/EstiloTarjeta"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="#FFFFFF"
-    android:padding="16dp"
-    android:layout_marginBottom="8dp">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txtNombre"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Juan Pérez"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#212121" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/txtNumero"
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_persona"
+            android:layout_marginEnd="8dp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="María López"
+                android:textSize="@dimen/texto_cuerpo"
+                android:textStyle="bold"
+                android:textColor="@color/texto_principal" />
+
+            <TextView
+                android:id="@+id/txtNumero"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="N° Socio: 1111"
+                android:textColor="@color/texto_secundario" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtEstado"
+            style="@style/EstiloEstado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vencido"
+            android:background="@color/red" />
+    </LinearLayout>
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="N° 0001"
-        android:textColor="#666666" />
-
-    <TextView
-        android:id="@+id/txtDni"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="DNI 30123456"
-        android:textColor="#666666" />
-
-    <TextView
-        android:id="@+id/txtDireccion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Dirección: ..."
-        android:textColor="#666666" />
-
-    <TextView
-        android:id="@+id/txtTelefono"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Teléfono: ..."
-        android:textColor="#666666" />
-
-    <TextView
-        android:id="@+id/txtApto"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Apto físico: Sí"
-        android:textColor="#666666" />
-
-    <TextView
-        android:id="@+id/txtVencimiento"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Vence: ..."
-        android:textColor="#666666" />
-
-    <TextView
-        android:id="@+id/txtEstado"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="1dp"
+        android:background="@color/fondo_medio"
         android:layout_marginTop="8dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:text="Vencido"
-        android:textColor="#FFFFFF"
-        android:textSize="12sp"
-        android:background="#E53935" />
+        android:layout_marginBottom="8dp" />
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
+        <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_dni" android:layout_marginEnd="6dp" />
+        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="DNI" android:textColor="@color/texto_secundario" />
+        <TextView android:id="@+id/txtDni" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/texto_principal" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
+        <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_persona" android:layout_marginEnd="6dp" />
+        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Nombre" android:textColor="@color/texto_secundario" />
+        <TextView android:id="@+id/txtNombreSolo" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/texto_principal" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
+        <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_persona" android:layout_marginEnd="6dp" />
+        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Apellido" android:textColor="@color/texto_secundario" />
+        <TextView android:id="@+id/txtApellidoSolo" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/texto_principal" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
+        <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_calendario" android:layout_marginEnd="6dp" />
+        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Vencimiento" android:textColor="@color/texto_secundario" />
+        <TextView android:id="@+id/txtVencimiento" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/red" android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
+        <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_corazon" android:layout_marginEnd="6dp" />
+        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Apto Físico" android:textColor="@color/texto_secundario" />
+        <TextView android:id="@+id/txtApto" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/texto_principal" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
+        <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_check_verde" android:layout_marginEnd="6dp" />
+        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Estado" android:textColor="@color/texto_secundario" />
+        <TextView android:id="@+id/txtEstadoValor" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/verde" android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
+        <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_telefono" android:layout_marginEnd="6dp" />
+        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Teléfono" android:textColor="@color/texto_secundario" />
+        <TextView android:id="@+id/txtTelefono" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/texto_principal" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
+        <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_ubicacion" android:layout_marginEnd="6dp" />
+        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Dirección" android:textColor="@color/texto_secundario" />
+        <TextView android:id="@+id/txtDireccion" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/texto_principal" />
+    </LinearLayout>
 
 </LinearLayout>

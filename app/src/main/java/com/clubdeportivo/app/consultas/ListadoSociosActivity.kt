@@ -2,9 +2,12 @@ package com.clubdeportivo.app.consultas
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +21,7 @@ class ListadoSociosActivity : AppCompatActivity() {
 
     private lateinit var adapter: SocioAdapter
     private lateinit var txtMostrando: TextView
+    private lateinit var txtSinResultados: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,38 +29,69 @@ class ListadoSociosActivity : AppCompatActivity() {
 
         val rvSocios = findViewById<RecyclerView>(R.id.rvSocios)
         val edtBuscar = findViewById<EditText>(R.id.edtBuscar)
-        val btnBuscar = findViewById<Button>(R.id.btnBuscar)
         txtMostrando = findViewById(R.id.txtMostrando)
+        txtSinResultados = findViewById(R.id.txtSinResultados)
 
-        adapter = SocioAdapter(Datos.socios.toList())
+        findViewById<Button>(R.id.btnVolver).setOnClickListener {
+            startActivity(Intent(this, MenuActivity::class.java))
+        }
+
+        adapter = SocioAdapter(Datos.socios.toList()) { socio ->
+            val intent = Intent(this, DetalleSocioActivity::class.java)
+            intent.putExtra("nombre", socio.nombre)
+            intent.putExtra("apellido", socio.apellido)
+            intent.putExtra("dni", socio.dni)
+            intent.putExtra("telefono", socio.telefono)
+            intent.putExtra("direccion", socio.direccion)
+            intent.putExtra("email", socio.email)
+            intent.putExtra("aptoFisico", socio.aptoFisico)
+            intent.putExtra("estado", socio.estado)
+            intent.putExtra("fechaVencimiento", socio.fechaVencimiento)
+            startActivity(intent)
+        }
         rvSocios.layoutManager = LinearLayoutManager(this)
         rvSocios.adapter = adapter
         actualizarMostrando(adapter.itemCount)
 
-        btnBuscar.setOnClickListener {
-            val texto = edtBuscar.text.toString().trim().lowercase()
-            val filtrados: List<Socio> = if (texto.isEmpty()) {
-                Datos.socios.toList()
-            } else {
-                Datos.socios.filter {
-                    it.dni.contains(texto) ||
-                            it.nombre.lowercase().contains(texto) ||
-                            it.apellido.lowercase().contains(texto)
+        edtBuscar.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val texto = s.toString().trim().lowercase()
+                val filtrados: List<Socio> = if (texto.isEmpty()) {
+                    Datos.socios.toList()
+                } else {
+                    Datos.socios.filter {
+                        it.dni.contains(texto) ||
+                                it.nombre.lowercase().contains(texto) ||
+                                it.apellido.lowercase().contains(texto)
+                    }
                 }
+                adapter.actualizar(filtrados)
+                actualizarMostrando(filtrados.size)
+                txtSinResultados.visibility = if (filtrados.isEmpty()) View.VISIBLE else View.GONE
             }
-            adapter.actualizar(filtrados)
-            actualizarMostrando(filtrados.size)
-        }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.selectedItemId = R.id.nav_socios
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_inicio -> startActivity(Intent(this, MenuActivity::class.java))
-                R.id.nav_vencimiento -> startActivity(Intent(this, VencimientosActivity::class.java))
-                R.id.nav_perfil -> startActivity(Intent(this, PerfilActivity::class.java))
+                R.id.nav_inicio -> {
+                    startActivity(Intent(this, MenuActivity::class.java))
+                    true
+                }
+                R.id.nav_vencimiento -> {
+                    startActivity(Intent(this, VencimientosActivity::class.java))
+                    true
+                }
+                R.id.nav_perfil -> {
+                    startActivity(Intent(this, PerfilActivity::class.java))
+                    true
+                }
+                else -> false
             }
-            true
         }
     }
 

@@ -9,7 +9,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.clubdeportivo.app.R
 import com.clubdeportivo.app.data.Socio
 
-class SocioAdapter(private var lista: List<Socio>) : RecyclerView.Adapter<SocioAdapter.SocioViewHolder>() {
+class SocioAdapter(
+    private var lista: List<Socio>,
+    private val onItemClick: (Socio) -> Unit
+) : RecyclerView.Adapter<SocioAdapter.SocioViewHolder>() {
 
     class SocioViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val txtNombre: TextView = view.findViewById(R.id.txtNombre)
@@ -26,16 +29,16 @@ class SocioAdapter(private var lista: List<Socio>) : RecyclerView.Adapter<SocioA
     override fun onBindViewHolder(holder: SocioViewHolder, position: Int) {
         val socio = lista[position]
         holder.txtNombre.text = "${socio.nombre} ${socio.apellido}"
-        holder.txtNumero.text = "N° ${socio.id.toString().padStart(4, '0')}"
-        holder.txtDni.text = "DNI ${socio.dni}"
+        holder.txtNumero.text = "N° Socio: ${socio.id.toString().padStart(4, '0')}"
+        holder.txtDni.text = "DNI: ${socio.dni}"
         holder.txtEstado.text = socio.estado
         val color = when {
             socio.estado.equals("Vencido", ignoreCase = true) -> "#E53935"
             socio.estado.equals("Alerta", ignoreCase = true) -> "#F57C00"
             else -> "#2E7D32"
         }
-        holder.txtEstado.setBackgroundColor(Color.parseColor("#2E7D32"))
-
+        holder.txtEstado.setBackgroundColor(Color.parseColor(color))
+        holder.itemView.setOnClickListener { onItemClick(socio) }
     }
 
     override fun getItemCount(): Int = lista.size

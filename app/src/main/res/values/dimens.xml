@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="texto_titulo">22sp</dimen>
+    <dimen name="texto_subtitulo">14sp</dimen>
+    <dimen name="texto_cuerpo">16sp</dimen>
+    <dimen name="texto_etiqueta">13sp</dimen>
+    <dimen name="texto_insignia">12sp</dimen>
+    <dimen name="texto_boton">16sp</dimen>
+
+    <dimen name="alto_input">45dp</dimen>
+    <dimen name="alto_boton">48dp</dimen>
+
+    <dimen name="margen_tarjeta">8dp</dimen>
+    <dimen name="padding_tarjeta">16dp</dimen>
+    <dimen name="tamano_icono">48dp</dimen>
+</resources>
