@@ -110,7 +110,7 @@
                 android:id="@+id/spConcepto"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                android:background="@drawable/bg_campo" />
+                android:background="@drawable/bg_spinner" />
 
             <!-- Importe -->
             <TextView
@@ -159,7 +159,7 @@
                         android:id="@+id/spMedioPago"
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
-                        android:background="@drawable/bg_campo" />
+                        android:background="@drawable/bg_spinner" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -180,7 +180,7 @@
                         android:id="@+id/spCuotas"
                         android:layout_width="match_parent"
                         android:layout_height="44dp"
-                        android:background="@drawable/bg_campo" />
+                        android:background="@drawable/bg_spinner" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -197,7 +197,7 @@
                 android:id="@+id/tvFecha"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                android:background="@drawable/bg_campo"
+                android:background="@drawable/bg_spinner"
                 android:gravity="center_vertical"
                 android:paddingStart="14dp"
                 android:paddingEnd="14dp"
