@@ -33,7 +33,9 @@
         <activity android:name=".consultas.PerfilActivity" android:exported="false" />
         <activity android:name=".consultas.DetalleSocioActivity" android:exported="false" />
         <activity android:name=".consultas.CarnetActivity" android:exported="false" />
-
+        <activity android:name=".cobros.CobrarCuotaActivity" android:exported="false" />
+        <activity android:name=".cobros.CobrarActividadActivity" android:exported="false" />
+        <activity android:name=".cobros.ComprobanteActivity" android:exported="false" />
     </application>
 
 </manifest>
