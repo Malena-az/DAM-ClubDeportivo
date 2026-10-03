@@ -34,14 +34,11 @@ class MenuActivity : AppCompatActivity() {
         findViewById<View>(R.id.cardCarnet).setOnClickListener {
             startActivity(Intent(this, com.clubdeportivo.app.consultas.CarnetActivity::class.java))
         }
-        val tarjetasDesarrollo = listOf(
-            R.id.cardCobrarCuota,
-            R.id.cardCobrarActividad,
-        )
-        for (id in tarjetasDesarrollo) {
-            findViewById<View>(id).setOnClickListener {
-                Toast.makeText(this, "Función en desarrollo", Toast.LENGTH_SHORT).show()
-            }
+        findViewById<View>(R.id.cardCobrarCuota).setOnClickListener {
+            startActivity(Intent(this, com.clubdeportivo.app.cobros.CobrarCuotaActivity::class.java))
+        }
+        findViewById<View>(R.id.cardCobrarActividad).setOnClickListener {
+            startActivity(Intent(this, com.clubdeportivo.app.cobros.CobrarActividadActivity::class.java))
         }
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
