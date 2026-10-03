@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.clubdeportivo.app.R
 import com.clubdeportivo.app.data.Datos
+import com.clubdeportivo.app.data.Socio
 import com.clubdeportivo.app.registro.MenuActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import java.text.SimpleDateFormat
@@ -30,25 +31,32 @@ class VencimientosActivity : AppCompatActivity() {
         val txtFecha = findViewById<TextView>(R.id.txtFecha)
 
         val formato = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        txtFecha.text = formato.format(Date())
+        val hoy = formato.format(Date())
+        txtFecha.text = hoy
 
-        val vencidos = Datos.socios.filter { it.estado.equals("Vencido", ignoreCase = true) }
-        txtCantidad.text = vencidos.size.toString()
+        // Socios que vencen HOY
+        val vencenHoy = Datos.socios.filter { it.fechaVencimiento == hoy }
+        txtCantidad.text = vencenHoy.size.toString()
 
-        if (vencidos.isEmpty()) {
+        // Todos los vencidos, ordenados por fecha más reciente primero
+        val todosVencidos = Datos.socios
+            .filter { it.estado.equals("Vencido", ignoreCase = true) }
+            .sortedByDescending { parseFecha(it.fechaVencimiento) }
+
+        if (todosVencidos.isEmpty()) {
             layoutVacio.visibility = View.VISIBLE
             txtTituloLista.visibility = View.GONE
             rvVencimientos.visibility = View.GONE
         } else {
             layoutVacio.visibility = View.GONE
             txtTituloLista.visibility = View.VISIBLE
-            txtTituloLista.text = "Socios con vencimiento hoy (${vencidos.size})"
+            txtTituloLista.text = "Todos los vencimientos (${todosVencidos.size})"
             rvVencimientos.visibility = View.VISIBLE
             rvVencimientos.layoutManager = LinearLayoutManager(this)
-            rvVencimientos.adapter = VencimientoAdapter(vencidos)
+            rvVencimientos.adapter = VencimientoAdapter(todosVencidos)
         }
 
-        val bottomNav = findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.bottomNav)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         bottomNav.selectedItemId = R.id.nav_vencimiento
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
@@ -66,6 +74,14 @@ class VencimientosActivity : AppCompatActivity() {
                 }
                 else -> false
             }
+        }
+    }
+
+    private fun parseFecha(fecha: String): Date {
+        return try {
+            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(fecha) ?: Date(0)
+        } catch (e: Exception) {
+            Date(0)
         }
     }
 }

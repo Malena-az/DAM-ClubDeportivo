@@ -65,7 +65,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Información del día"
+                    android:text="Vencimientos de hoy"
                     android:textSize="@dimen/texto_cuerpo"
                     android:textStyle="bold"
                     android:textColor="@color/texto_principal"
@@ -109,7 +109,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Socios encontrados"
+                        android:text="Socios que vencen hoy"
                         android:textColor="@color/texto_principal" />
 
                     <ImageView
