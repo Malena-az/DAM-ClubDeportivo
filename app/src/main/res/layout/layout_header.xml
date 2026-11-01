@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Encabezado único de la app: flecha para volver + título centrado -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/btnVolver"
+        android:layout_width="32dp"
+        android:layout_height="wrap_content"
+        android:text="←"
+        android:textColor="@color/texto_principal"
+        android:textSize="28sp" />
+
+    <TextView
+        android:id="@+id/tvTitulo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/texto_principal"
+        android:textSize="@dimen/texto_titulo"
+        android:textStyle="bold" />
+
+    <!-- Espaciador del mismo ancho que la flecha: mantiene el título centrado -->
+    <View
+        android:layout_width="32dp"
+        android:layout_height="0dp" />
+</LinearLayout>

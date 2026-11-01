@@ -2,42 +2,43 @@ package com.clubdeportivo.app.registro
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.EditText
-import android.widget.Toast
 import android.widget.Button
-import androidx.activity.enableEdgeToEdge
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.clubdeportivo.app.R
-
+import com.clubdeportivo.app.data.ClubDbHelper
+import com.clubdeportivo.app.data.Sesion
 
 class LoginActivity : AppCompatActivity() {
 
-    private val usuarioCorrecto = "admin"
-    private val passwordCorrecto = "1234"
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_login)
 
+        val db = ClubDbHelper.get(this)
         val etUsuario = findViewById<EditText>(R.id.etUsuario)
         val etContrasena = findViewById<EditText>(R.id.etContrasena)
-        val btnIngresar = findViewById<Button>(R.id.btnIngresar)
+        val txtError = findViewById<TextView>(R.id.txtError)
 
-        btnIngresar.setOnClickListener {
+        findViewById<Button>(R.id.btnIngresar).setOnClickListener {
             val usuario = etUsuario.text.toString().trim()
             val contrasena = etContrasena.text.toString().trim()
+            txtError.visibility = android.view.View.GONE
 
             when {
-                usuario.isEmpty() || contrasena.isEmpty() -> {
-                    Toast.makeText(this, "Completa usuario y contraseña", Toast.LENGTH_SHORT).show()
-                }
-                usuario != usuarioCorrecto || contrasena != passwordCorrecto -> {
+                usuario.isEmpty() || contrasena.isEmpty() ->
+                    Toast.makeText(this, "Completá usuario y contraseña", Toast.LENGTH_SHORT).show()
+                // La combinación usuario + contraseña se valida contra la tabla usuarios
+                !db.validarLogin(usuario, contrasena) -> {
+                    txtError.visibility = android.view.View.VISIBLE
                     Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
                 }
                 else -> {
-                    val intent = Intent(this, MenuActivity::class.java)
-                    startActivity(intent)
+                    Sesion.usuario = usuario
+                    startActivity(Intent(this, MenuActivity::class.java))
+                    finish()
                 }
             }
         }

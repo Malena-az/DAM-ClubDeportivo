@@ -2,37 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/club_bg_gray"
+    android:background="@color/fondo_pantalla"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <!-- Encabezado -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/btnVolver"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="←"
-            android:textColor="@color/black"
-            android:textSize="28sp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:paddingEnd="28dp"
-            android:text="Cobrar cuota"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+    <include layout="@layout/layout_header" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -46,7 +20,6 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp">
 
-            <!-- Buscador -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,27 +28,18 @@
 
                 <EditText
                     android:id="@+id/etDni"
+                    style="@style/Campo"
                     android:layout_width="0dp"
-                    android:layout_height="48dp"
                     android:layout_weight="1"
-                    android:background="@drawable/bg_campo"
                     android:hint="Buscar por DNI"
                     android:inputType="number"
-                    android:maxLength="8"
-                    android:paddingStart="14dp"
-                    android:paddingEnd="14dp"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/club_hint" />
+                    android:maxLength="8" />
 
                 <Button
                     android:id="@+id/btnBuscar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
+                    style="@style/BotonBuscar"
                     android:layout_marginStart="8dp"
-                    android:backgroundTint="@color/club_dark"
-                    android:text="Buscar"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white" />
+                    android:text="Buscar" />
             </LinearLayout>
 
             <!-- Tarjeta del socio (oculta hasta buscar) -->
@@ -83,7 +47,7 @@
                 android:id="@+id/cardSocio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/bg_tarjeta"
                 android:orientation="vertical"
                 android:padding="16dp"
@@ -101,19 +65,12 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:textColor="@color/black"
-                        android:textSize="20sp" />
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvEstado"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_chip"
-                        android:paddingStart="14dp"
-                        android:paddingTop="4dp"
-                        android:paddingEnd="14dp"
-                        android:paddingBottom="4dp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold" />
+                        style="@style/ChipEstado" />
                 </LinearLayout>
 
                 <TextView
@@ -121,47 +78,53 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/club_text_gray" />
 
                 <TextView
                     android:id="@+id/tvDniSocio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/club_text_gray" />
 
                 <TextView
                     android:id="@+id/tvVence"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/club_text_gray" />
             </LinearLayout>
 
-            <!-- Importe -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Importe *"
-                android:textColor="@color/black"
-                android:textSize="12sp" />
-
-            <EditText
-                android:id="@+id/etImporte"
+            <TextView style="@style/Etiqueta" android:layout_marginTop="20dp" android:text="Período a abonar *" />
+            <RadioGroup
+                android:id="@+id/rgPeriodo"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:background="@drawable/bg_campo"
-                android:hint="$ 0,00"
-                android:inputType="numberDecimal"
-                android:paddingStart="14dp"
-                android:paddingEnd="14dp"
-                android:textColor="@color/black"
-                android:textColorHint="@color/club_hint" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-            <!-- Medio de pago y cuotas -->
+                <RadioButton
+                    android:id="@+id/rbMensual"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:textColor="@color/black" />
+
+                <RadioButton
+                    android:id="@+id/rbQuincenal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black" />
+            </RadioGroup>
+
+            <TextView style="@style/Etiqueta" android:text="Importe (según lista de precios)" />
+            <TextView
+                android:id="@+id/tvImporte"
+                style="@style/Campo"
+                android:gravity="center_vertical"
+                android:textStyle="bold" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="4dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
@@ -172,18 +135,8 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Medio de pago"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
-
-                    <Spinner
-                        android:id="@+id/spMedioPago"
-                        android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:background="@drawable/bg_spinner" />
+                    <TextView style="@style/Etiqueta" android:text="Medio de pago *" />
+                    <Spinner android:id="@+id/spMedioPago" style="@style/Selector" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -193,24 +146,13 @@
                     android:layout_weight="1"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Cuotas"
-                        android:textColor="@color/black"
-                        android:textSize="12sp" />
-
-                    <Spinner
-                        android:id="@+id/spCuotas"
-                        android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:background="@drawable/bg_spinner" />
+                    <TextView style="@style/Etiqueta" android:text="Cuotas" />
+                    <Spinner android:id="@+id/spCuotas" style="@style/Selector" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
 
-    <!-- Botones fijos abajo -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -219,21 +161,9 @@
 
         <Button
             android:id="@+id/btnRegistrar"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:backgroundTint="@color/club_green"
-            android:text="Registrar pago"
-            android:textAllCaps="false"
-            android:textColor="@color/white" />
-
-        <Button
-            android:id="@+id/btnDescargar"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="8dp"
-            android:backgroundTint="@color/club_off_white"
-            android:text="Descargar comprobante"
-            android:textAllCaps="false"
-            android:textColor="@color/black" />
+            style="@style/BotonPrimario"
+            android:text="Registrar pago" />
     </LinearLayout>
+
+    <include layout="@layout/layout_bottom_nav" />
 </LinearLayout>

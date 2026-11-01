@@ -1,163 +1,162 @@
 package com.clubdeportivo.app.cobros
 
 import android.content.Intent
-import android.graphics.Color
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import com.clubdeportivo.app.BaseActivity
 import com.clubdeportivo.app.R
-import com.clubdeportivo.app.data.Datos
+import com.clubdeportivo.app.data.ClubDbHelper
+import com.clubdeportivo.app.data.Estados
+import com.clubdeportivo.app.data.Fechas
 import com.clubdeportivo.app.data.Pago
+import com.clubdeportivo.app.data.Precio
 import com.clubdeportivo.app.data.Socio
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import android.content.res.ColorStateList
-import android.widget.AdapterView
+import com.clubdeportivo.app.util.FormUtil
+import com.clubdeportivo.app.util.dniRequerido
 
-class CobrarCuotaActivity : AppCompatActivity() {
+/**
+ * Cobro de la cuota. Se llega desde dos lugares:
+ *  1) El botón "Cobrar cuota" del menú (se busca al socio por DNI).
+ *  2) Automáticamente después de dar de alta un socio: llega el extra "socioId"
+ *     y la pantalla ya muestra al socio, sin pasar por el botón.
+ * El importe sale de la tabla precios, no se escribe a mano.
+ */
+class CobrarCuotaActivity : BaseActivity() {
 
-    private var socioActual: Socio? = null   // socio encontrado en la búsqueda
-    private var ultimoPago: Pago? = null     // último pago registrado en esta pantalla
+    private lateinit var db: ClubDbHelper
+    private lateinit var precioMensual: Precio
+    private lateinit var precioQuincenal: Precio
+    private var socioActual: Socio? = null
+
+    private lateinit var etDni: EditText
+    private lateinit var cardSocio: View
+    private lateinit var tvImporte: TextView
+    private lateinit var rbMensual: RadioButton
+    private lateinit var rbQuincenal: RadioButton
+    private lateinit var spMedioPago: Spinner
+    private lateinit var spCuotas: Spinner
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_cobrar_cuota)
+        configurarPantalla("Cobrar cuota")
+        db = ClubDbHelper.get(this)
 
-        val etDni = findViewById<EditText>(R.id.etDni)
-        val etImporte = findViewById<EditText>(R.id.etImporte)
-        val cardSocio = findViewById<View>(R.id.cardSocio)
-        val tvNombre = findViewById<TextView>(R.id.tvNombre)
-        val tvEstado = findViewById<TextView>(R.id.tvEstado)
-        val tvNroSocio = findViewById<TextView>(R.id.tvNroSocio)
-        val tvDniSocio = findViewById<TextView>(R.id.tvDniSocio)
-        val tvVence = findViewById<TextView>(R.id.tvVence)
-        val spMedioPago = findViewById<Spinner>(R.id.spMedioPago)
-        val spCuotas = findViewById<Spinner>(R.id.spCuotas)
-
-        // Opciones de los spinners (la posición 0 es el "placeholder")
-        val medios = listOf(
-            "Seleccionar...",
-            "Efectivo",
-            "Tarjeta de crédito",
-            "Tarjeta de débito",
-            "Transferencia"
-        )
-        val cuotas = listOf("Seleccionar...", "1", "3", "6")
-        spMedioPago.adapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, medios)
-        spCuotas.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, cuotas)
-
-        // Las cuotas solo aplican a tarjeta de crédito
-        fun actualizarCuotas() {
-            val esCredito = spMedioPago.selectedItem.toString() == "Tarjeta de crédito"
-            spCuotas.isEnabled = esCredito
-            spCuotas.alpha = if (esCredito) 1f else 0.5f
-            if (!esCredito) spCuotas.setSelection(1)   // posición 1 = "1" cuota
+        val mensual = db.obtenerPrecio(ClubDbHelper.CUOTA_MENSUAL)
+        val quincenal = db.obtenerPrecio(ClubDbHelper.CUOTA_QUINCENAL)
+        if (mensual == null || quincenal == null) {
+            Toast.makeText(this, "Falta cargar la lista de precios", Toast.LENGTH_LONG).show()
+            finish()
+            return
         }
-        spMedioPago.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                actualizarCuotas()
-            }
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+        precioMensual = mensual
+        precioQuincenal = quincenal
 
-        findViewById<TextView>(R.id.btnVolver).setOnClickListener { finish() }
+        etDni = findViewById(R.id.etDni)
+        cardSocio = findViewById(R.id.cardSocio)
+        tvImporte = findViewById(R.id.tvImporte)
+        rbMensual = findViewById(R.id.rbMensual)
+        rbQuincenal = findViewById(R.id.rbQuincenal)
+        spMedioPago = findViewById(R.id.spMedioPago)
+        spCuotas = findViewById(R.id.spCuotas)
 
-        // BUSCAR socio por DNI
+        FormUtil.configurarMedioYCuotas(this, spMedioPago, spCuotas)
+
+        rbMensual.text = "Mensual (${precioMensual.dias} días) · ${FormUtil.moneda(precioMensual.importe)}"
+        rbQuincenal.text = "Quincenal (${precioQuincenal.dias} días) · ${FormUtil.moneda(precioQuincenal.importe)}"
+        findViewById<RadioGroup>(R.id.rgPeriodo).setOnCheckedChangeListener { _, _ -> mostrarImporte() }
+        mostrarImporte()
+
         findViewById<Button>(R.id.btnBuscar).setOnClickListener {
-            val dni = etDni.text.toString().trim()
-            if (dni.length < 7) {
-                etDni.error = "Ingresá un DNI de 7 u 8 dígitos"
-                return@setOnClickListener
-            }
-            val socio = Datos.buscarPorDni(dni)
+            val dni = etDni.dniRequerido() ?: return@setOnClickListener
+            val socio = db.buscarSocioPorDni(dni)
             if (socio == null) {
                 socioActual = null
                 cardSocio.visibility = View.GONE
-                toast("No se encontró un socio con ese DNI")
-                return@setOnClickListener
-            }
-            socioActual = socio
-            tvNombre.text = "${socio.nombre} ${socio.apellido}"
-            tvEstado.text = socio.estado
-            val colorChip =
-                if (socio.estado == "Activo") R.color.estado_activo else R.color.estado_vencido
-            tvEstado.backgroundTintList = ColorStateList.valueOf(getColor(colorChip))
-            tvNroSocio.text = "N° Socio: ${socio.id}"
-            tvDniSocio.text = "DNI: ${socio.dni}"
-            tvVence.text = "Vence: ${socio.fechaVencimiento}"
-            etImporte.setText("15000")
-            cardSocio.visibility = View.VISIBLE
-        }
-
-        // REGISTRAR pago (Create)
-        findViewById<Button>(R.id.btnRegistrar).setOnClickListener {
-            val socio = socioActual
-            if (socio == null) {
-                toast("Primero buscá un socio por DNI")
-                return@setOnClickListener
-            }
-            val importe = etImporte.text.toString().toDoubleOrNull()
-            if (importe == null || importe <= 0) {
-                etImporte.error = "Ingresá un importe válido (ej: 15000)"
-                return@setOnClickListener
-            }
-            if (spMedioPago.selectedItemPosition == 0) {
-                toast("Seleccioná un medio de pago")
-                return@setOnClickListener
-            }
-            if (spCuotas.isEnabled && spCuotas.selectedItemPosition == 0) {
-                toast("Seleccioná la cantidad de cuotas")
-                return@setOnClickListener
-            }
-
-            val fecha = SimpleDateFormat("dd/MM/yyyy", Locale("es", "AR")).format(Date())
-            val pago = Pago(
-                id = Datos.pagos.size + 1,
-                dni = socio.dni,
-                concepto = "Cuota mensual",
-                importe = importe,
-                medioPago = spMedioPago.selectedItem.toString(),
-                fecha = fecha
-            )
-            Datos.pagos.add(pago)
-            ultimoPago = pago
-            toast("Pago registrado")
-            abrirComprobante(pago, socio)
-        }
-
-        // DESCARGAR comprobante (solo si ya se registró un pago)
-        findViewById<Button>(R.id.btnDescargar).setOnClickListener {
-            val pago = ultimoPago
-            val socio = socioActual
-            if (pago == null || socio == null) {
-                toast("Primero registrá un pago")
+                Toast.makeText(this, "No se encontró un socio con ese DNI", Toast.LENGTH_SHORT).show()
             } else {
-                abrirComprobante(pago, socio)
+                mostrarSocio(socio)
             }
         }
+
+        findViewById<Button>(R.id.btnRegistrar).setOnClickListener { registrarPago() }
+
+
+        // Llegada automática desde el alta de socio
+        val socioId = intent.getIntExtra("socioId", -1)
+        if (socioId != -1) db.obtenerSocio(socioId)?.let { mostrarSocio(it) }
+    }
+
+    private fun precioElegido(): Precio = if (rbQuincenal.isChecked) precioQuincenal else precioMensual
+
+    private fun mostrarImporte() {
+        tvImporte.text = FormUtil.moneda(precioElegido().importe)
+    }
+
+    private fun mostrarSocio(socio: Socio) {
+        socioActual = socio
+        etDni.setText(socio.dni)
+        findViewById<TextView>(R.id.tvNombre).text = socio.nombreCompleto
+        findViewById<TextView>(R.id.tvNroSocio).text = "N° Socio: ${socio.nroSocio}"
+        findViewById<TextView>(R.id.tvDniSocio).text = "DNI: ${socio.dni}"
+        findViewById<TextView>(R.id.tvVence).text =
+            if (socio.fechaVencimiento.isEmpty()) "Primera cuota pendiente"
+            else "Vence: ${Fechas.aVisible(socio.fechaVencimiento)}"
+        val tvEstado = findViewById<TextView>(R.id.tvEstado)
+        tvEstado.text = socio.estado
+        tvEstado.backgroundTintList = ColorStateList.valueOf(Estados.color(socio.estado))
+        cardSocio.visibility = View.VISIBLE
+    }
+
+    private fun registrarPago() {
+        val socio = socioActual
+        if (socio == null) {
+            Toast.makeText(this, "Primero buscá un socio por DNI", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (spMedioPago.selectedItemPosition == 0) {
+            Toast.makeText(this, "Seleccioná un medio de pago", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (spCuotas.isEnabled && spCuotas.selectedItemPosition == 0) {
+            Toast.makeText(this, "Seleccioná la cantidad de cuotas", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val pago = db.registrarPagoCuota(
+            socio, precioElegido(), spMedioPago.selectedItem.toString(), FormUtil.cuotasElegidas(spCuotas)
+        )
+        if (pago == null) {
+            Toast.makeText(this, "No se pudo registrar el pago", Toast.LENGTH_SHORT).show()
+            return
+        }
+        // Se vuelve a leer el socio: su vencimiento ya se actualizó en la base
+        val actualizado = db.obtenerSocio(socio.id) ?: socio
+        mostrarSocio(actualizado)
+        Toast.makeText(this, "Pago registrado", Toast.LENGTH_SHORT).show()
+        abrirComprobante(pago, actualizado)
     }
 
     private fun abrirComprobante(pago: Pago, socio: Socio) {
         val intent = Intent(this, ComprobanteActivity::class.java)
-        intent.putExtra("nombre", "${socio.nombre} ${socio.apellido}")
-        intent.putExtra("nroSocio", socio.id.toString())
+        intent.putExtra("nroComprobante", pago.id)
+        intent.putExtra("nombre", socio.nombreCompleto)
+        intent.putExtra("nroSocio", socio.nroSocio)
         intent.putExtra("dni", pago.dni)
         intent.putExtra("concepto", pago.concepto)
         intent.putExtra("importe", pago.importe)
         intent.putExtra("medioPago", pago.medioPago)
-        intent.putExtra("fecha", pago.fecha)
+        intent.putExtra("cuotas", pago.cuotas)
+        intent.putExtra("fecha", Fechas.aVisible(pago.fechaPago))
+        intent.putExtra("vencimiento", Fechas.aVisible(pago.nuevoVencimiento))
         startActivity(intent)
-    }
-
-    private fun toast(mensaje: String) {
-        Toast.makeText(this, mensaje, Toast.LENGTH_SHORT).show()
     }
 }

@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/fondo_medio">
+    android:background="@color/fondo_pantalla">
+
+    <include layout="@layout/layout_header" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,29 +17,6 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
-
-            <Button
-                android:id="@+id/btnVolver"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:text="←"
-                android:textSize="28sp"
-                android:textColor="@color/texto_principal"
-                android:backgroundTint="@color/fondo_medio"/>
-
-            <TextView
-                style="@style/EstiloTitulo"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Listado de Socios"
-                android:layout_marginBottom="16dp" />
-        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -95,14 +75,6 @@
 
     </LinearLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:itemIconTint="@color/bottom_nav_color"
-        app:itemTextColor="@color/bottom_nav_color"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu" />
+    <include layout="@layout/layout_bottom_nav" />
 
 </LinearLayout>

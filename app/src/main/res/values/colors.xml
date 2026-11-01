@@ -9,6 +9,8 @@
     <color name="red">#FFE53935</color>
     <color name="fondo_claro">#EFEFEF</color>
     <color name="fondo_medio">#96969A</color>
+    <!-- Fondo único de todas las pantallas -->
+    <color name="fondo_pantalla">#96969A</color>
     <color name="texto_principal">#212121</color>
     <color name="texto_secundario">#999999</color>
     <color name="texto_pista">#555555</color>

@@ -58,49 +58,49 @@
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
         <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_dni" android:layout_marginEnd="6dp" />
-        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="DNI" android:textColor="@color/texto_secundario" />
+        <TextView android:layout_width="100dp" android:layout_height="wrap_content" android:text="DNI" android:textColor="@color/texto_secundario" />
         <TextView android:id="@+id/txtDni" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/texto_principal" />
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
         <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_persona" android:layout_marginEnd="6dp" />
-        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Nombre" android:textColor="@color/texto_secundario" />
+        <TextView android:layout_width="100dp" android:layout_height="wrap_content" android:text="Nombre" android:textColor="@color/texto_secundario" />
         <TextView android:id="@+id/txtNombreSolo" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/texto_principal" />
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
         <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_persona" android:layout_marginEnd="6dp" />
-        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Apellido" android:textColor="@color/texto_secundario" />
+        <TextView android:layout_width="100dp" android:layout_height="wrap_content" android:text="Apellido" android:textColor="@color/texto_secundario" />
         <TextView android:id="@+id/txtApellidoSolo" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/texto_principal" />
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
         <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_calendario" android:layout_marginEnd="6dp" />
-        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Vencimiento" android:textColor="@color/texto_secundario" />
+        <TextView android:layout_width="100dp" android:layout_height="wrap_content" android:text="Vencimiento" android:textColor="@color/texto_secundario" />
         <TextView android:id="@+id/txtVencimiento" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/red" android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
         <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_corazon" android:layout_marginEnd="6dp" />
-        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Apto Físico" android:textColor="@color/texto_secundario" />
+        <TextView android:layout_width="100dp" android:layout_height="wrap_content" android:text="Apto Físico" android:textColor="@color/texto_secundario" />
         <TextView android:id="@+id/txtApto" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/texto_principal" />
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
         <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_check_verde" android:layout_marginEnd="6dp" />
-        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Estado" android:textColor="@color/texto_secundario" />
+        <TextView android:layout_width="100dp" android:layout_height="wrap_content" android:text="Estado" android:textColor="@color/texto_secundario" />
         <TextView android:id="@+id/txtEstadoValor" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/verde" android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:paddingBottom="4dp">
         <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_telefono" android:layout_marginEnd="6dp" />
-        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Teléfono" android:textColor="@color/texto_secundario" />
+        <TextView android:layout_width="100dp" android:layout_height="wrap_content" android:text="Teléfono" android:textColor="@color/texto_secundario" />
         <TextView android:id="@+id/txtTelefono" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/texto_principal" />
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical">
         <ImageView android:layout_width="16dp" android:layout_height="16dp" android:src="@drawable/ic_ubicacion" android:layout_marginEnd="6dp" />
-        <TextView android:layout_width="70dp" android:layout_height="wrap_content" android:text="Dirección" android:textColor="@color/texto_secundario" />
+        <TextView android:layout_width="100dp" android:layout_height="wrap_content" android:text="Dirección" android:textColor="@color/texto_secundario" />
         <TextView android:id="@+id/txtDireccion" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="" android:textColor="@color/texto_principal" />
     </LinearLayout>
 

@@ -5,43 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/fondo_medio">
+    android:background="@color/fondo_pantalla">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="16dp">
+    <include layout="@layout/layout_header" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="☰"
-            android:textSize="22sp"
-            android:textColor="@color/texto_principal"
-            android:paddingEnd="16dp" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/EstiloTitulo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Control de Vencimientos" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Socios con cuotas que vence hoy"
-                android:textSize="@dimen/texto_subtitulo"
-                android:textColor="@color/texto_secundario" />
-        </LinearLayout>
-    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -109,7 +77,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Socios que vencen hoy"
+                        android:text="Estado de las cuotas"
                         android:textColor="@color/texto_principal" />
 
                     <ImageView
@@ -119,15 +87,56 @@
                         android:src="@drawable/ic_refrescar"
                         android:layout_marginStart="8dp" />
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/txtCantidad"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textSize="28sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/texto_principal" />
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtCantidad"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/naranja"
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Vencen hoy"
+                            android:textColor="@color/texto_principal" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/txtCantidadVencidos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="@color/red"
+                            android:textSize="28sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Ya vencidos"
+                            android:textColor="@color/texto_principal" />
+                    </LinearLayout>
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -197,14 +206,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:itemIconTint="@color/bottom_nav_color"
-        app:itemTextColor="@color/bottom_nav_color"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu" />
+    <include layout="@layout/layout_bottom_nav" />
 
 </LinearLayout>

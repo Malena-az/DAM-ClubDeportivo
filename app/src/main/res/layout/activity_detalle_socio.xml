@@ -5,30 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:fitsSystemWindows="true"
-    android:background="@color/fondo_medio">
+    android:background="@color/fondo_pantalla">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="16dp">
+    <include layout="@layout/layout_header" />
 
-        <TextView
-            android:id="@+id/btnVolver"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="←"
-            android:textSize="24sp"
-            android:textColor="@color/texto_principal"
-            android:paddingEnd="16dp" />
 
-        <TextView
-            style="@style/EstiloTitulo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Detalle de socio" />
-    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -378,17 +359,18 @@
                 android:text="🕐  Ver historial"
                 android:textColor="@color/texto_principal"
                 android:backgroundTint="@color/fondo_input" />
+
+            <Button
+                android:id="@+id/btnVerCarnet"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/alto_boton"
+                android:layout_marginTop="8dp"
+                android:text="🆔  Ver carnet"
+                android:textColor="@color/texto_principal"
+                android:backgroundTint="@color/fondo_input" />
         </LinearLayout>
     </ScrollView>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:itemIconTint="@color/bottom_nav_color"
-        app:itemTextColor="@color/bottom_nav_color"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu" />
+    <include layout="@layout/layout_bottom_nav" />
 
 </LinearLayout>

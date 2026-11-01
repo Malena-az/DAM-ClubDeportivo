@@ -1,85 +1,80 @@
 package com.clubdeportivo.app.consultas
 
-import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import com.clubdeportivo.app.BaseActivity
 import com.clubdeportivo.app.R
-import com.clubdeportivo.app.data.Datos
+import com.clubdeportivo.app.data.ClubDbHelper
+import com.clubdeportivo.app.data.Estados
+import com.clubdeportivo.app.data.Fechas
 import com.clubdeportivo.app.data.Socio
-import com.clubdeportivo.app.registro.MenuActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.clubdeportivo.app.util.PdfUtil
+import com.clubdeportivo.app.util.dniRequerido
 
-class CarnetActivity : AppCompatActivity() {
+/** El empleado busca al socio por DNI y ve (o descarga) su carnet. Los datos salen de la base. */
+class CarnetActivity : BaseActivity() {
 
     private lateinit var txtSinResultados: TextView
     private lateinit var layoutCarnet: View
     private lateinit var btnDescargar: Button
+    private var socioMostrado: Socio? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_carnet)
+        configurarPantalla("Carnet de socio")
+        val db = ClubDbHelper.get(this)
 
         txtSinResultados = findViewById(R.id.txtSinResultados)
         layoutCarnet = findViewById(R.id.layoutCarnet)
         btnDescargar = findViewById(R.id.btnDescargar)
+        mostrarCarnet(null, mostrarMensaje = false)
 
         val edtBuscar = findViewById<EditText>(R.id.edtBuscarDni)
         findViewById<Button>(R.id.btnBuscarCarnet).setOnClickListener {
-            val dni = edtBuscar.text.toString().trim()
-            if (dni.isEmpty()) {
-                Toast.makeText(this, "Ingresá un DNI", Toast.LENGTH_SHORT).show()
-            } else {
-                val socio = Datos.socios.find { it.dni == dni }
-                mostrarCarnet(socio)
-            }
+            val dni = edtBuscar.dniRequerido() ?: return@setOnClickListener
+            mostrarCarnet(db.buscarSocioPorDni(dni), mostrarMensaje = true)
         }
 
-        val socioInicial = Datos.socios.firstOrNull { it.estado.equals("Activo", ignoreCase = true) }
-        mostrarCarnet(socioInicial)
-
-        findViewById<TextView>(R.id.btnVolver).setOnClickListener {
-            startActivity(Intent(this, MenuActivity::class.java))
+        // Llegada desde el detalle de un socio: ya viene el DNI
+        intent.getStringExtra("dni")?.let { dniRecibido ->
+            edtBuscar.setText(dniRecibido)
+            mostrarCarnet(db.buscarSocioPorDni(dniRecibido), mostrarMensaje = true)
         }
 
         btnDescargar.setOnClickListener {
-            Toast.makeText(this, "Carnet descargado", Toast.LENGTH_SHORT).show()
-        }
-
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_inicio -> {
-                    startActivity(Intent(this, MenuActivity::class.java))
-                    true
-                }
-                R.id.nav_socios -> {
-                    startActivity(Intent(this, ListadoSociosActivity::class.java))
-                    true
-                }
-                R.id.nav_vencimiento -> {
-                    startActivity(Intent(this, VencimientosActivity::class.java))
-                    true
-                }
-                R.id.nav_perfil -> {
-                    startActivity(Intent(this, PerfilActivity::class.java))
-                    true
-                }
-                else -> false
+            val s = socioMostrado ?: return@setOnClickListener
+            val lineas = listOf(
+                "Socio: ${s.nombreCompleto}",
+                "N° de socio: ${s.nroSocio}",
+                "DNI: ${s.dni}",
+                "Fecha de alta: ${Fechas.aVisible(s.fechaAlta)}",
+                "Vencimiento: ${Fechas.aVisible(s.fechaVencimiento)}",
+                "Apto físico: ${if (s.aptoFisico) "Sí" else "No"}",
+                "Estado: ${s.estado}",
+                "",
+                "Este carnet es personal e intransferible."
+            )
+            val archivo = PdfUtil.guardar(this, "carnet_${s.nroSocio}.pdf", "Club Deportivo - Carnet de socio", lineas)
+            if (archivo != null) {
+                Toast.makeText(this, "Carnet generado", Toast.LENGTH_SHORT).show()
+                PdfUtil.abrir(this, archivo)
+            } else {
+                Toast.makeText(this, "No se pudo generar el carnet", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun mostrarCarnet(socio: Socio?) {
+    private fun mostrarCarnet(socio: Socio?, mostrarMensaje: Boolean) {
+        socioMostrado = socio
         if (socio == null) {
             layoutCarnet.visibility = View.GONE
             btnDescargar.visibility = View.GONE
-            txtSinResultados.visibility = View.VISIBLE
+            txtSinResultados.visibility = if (mostrarMensaje) View.VISIBLE else View.GONE
             return
         }
 
@@ -87,20 +82,25 @@ class CarnetActivity : AppCompatActivity() {
         btnDescargar.visibility = View.VISIBLE
         txtSinResultados.visibility = View.GONE
 
-        findViewById<TextView>(R.id.txtNombre).text = "${socio.nombre} ${socio.apellido}"
-        findViewById<TextView>(R.id.txtNumero).text = "N° Socio: ${socio.id.toString().padStart(4, '0')}"
+        findViewById<TextView>(R.id.txtNombre).text = socio.nombreCompleto
+        findViewById<TextView>(R.id.txtNumero).text = "N° Socio: ${socio.nroSocio}"
         findViewById<TextView>(R.id.txtDni).text = "DNI: ${socio.dni}"
-        findViewById<TextView>(R.id.valAlta).text = "01/01/2026"
-        findViewById<TextView>(R.id.valVencimiento).text = socio.fechaVencimiento
+        findViewById<TextView>(R.id.valAlta).text = Fechas.aVisible(socio.fechaAlta)
+        findViewById<TextView>(R.id.valVencimiento).text = Fechas.aVisible(socio.fechaVencimiento)
         findViewById<TextView>(R.id.valApto).text = if (socio.aptoFisico) "Sí" else "No"
-        findViewById<TextView>(R.id.valEstado).text = socio.estado
 
-        val esActivo = socio.estado.equals("Activo", ignoreCase = true)
+        val estado = socio.estado
+        val color = Estados.color(estado)
+        val valEstado = findViewById<TextView>(R.id.valEstado)
+        valEstado.text = estado
+        valEstado.setTextColor(color)
+
         val barra = findViewById<TextView>(R.id.txtBarraEstado)
-        val colorEstado = if (esActivo) "#2E7D32" else "#E53935"
-
-        barra.text = if (esActivo) "SOCIO ACTIVO" else "SOCIO VENCIDO"
-        barra.setBackgroundColor(Color.parseColor(colorEstado))
-        findViewById<TextView>(R.id.valEstado).setTextColor(Color.parseColor(colorEstado))
+        barra.text = when (estado) {
+            Estados.VENCIDO -> "SOCIO VENCIDO"
+            Estados.PENDIENTE -> "CUOTA PENDIENTE"
+            else -> "SOCIO ACTIVO"      // Activo o Alerta: hasta el día del vencimiento puede ingresar
+        }
+        barra.setBackgroundColor(color)
     }
 }

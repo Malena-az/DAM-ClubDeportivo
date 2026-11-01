@@ -1,95 +1,111 @@
 package com.clubdeportivo.app.consultas
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AlertDialog
+import com.clubdeportivo.app.BaseActivity
 import com.clubdeportivo.app.R
-import com.clubdeportivo.app.registro.MenuActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.clubdeportivo.app.data.ClubDbHelper
+import com.clubdeportivo.app.data.Estados
+import com.clubdeportivo.app.data.Fechas
+import com.clubdeportivo.app.data.Socio
+import com.clubdeportivo.app.registro.AltaSocioActivity
+import com.clubdeportivo.app.util.FormUtil
 
-class DetalleSocioActivity : AppCompatActivity() {
+class DetalleSocioActivity : BaseActivity() {
+
+    private lateinit var db: ClubDbHelper
+    private var socioId = -1
+    private var socio: Socio? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detalle_socio)
+        configurarPantalla("Detalle de socio", R.id.nav_socios)
+        db = ClubDbHelper.get(this)
+        socioId = intent.getIntExtra("socioId", -1)
 
-        val nombre = intent.getStringExtra("nombre") ?: ""
-        val apellido = intent.getStringExtra("apellido") ?: ""
-        val dni = intent.getStringExtra("dni") ?: ""
-        val telefono = intent.getStringExtra("telefono") ?: ""
-        val direccion = intent.getStringExtra("direccion") ?: ""
-        val email = intent.getStringExtra("email") ?: ""
-        val aptoFisico = intent.getBooleanExtra("aptoFisico", false)
-        val estado = intent.getStringExtra("estado") ?: "Activo"
-        val vencimiento = intent.getStringExtra("fechaVencimiento") ?: ""
+        findViewById<Button>(R.id.btnEditar).setOnClickListener {
+            startActivity(Intent(this, AltaSocioActivity::class.java).putExtra("socioId", socioId))
+        }
+        findViewById<Button>(R.id.btnDarDeBaja).setOnClickListener { confirmarBaja() }
+        findViewById<Button>(R.id.btnHistorial).setOnClickListener { mostrarHistorial() }
+        // Abre el carnet del socio ya buscado (le pasa el DNI por Intent)
+        findViewById<Button>(R.id.btnVerCarnet).setOnClickListener {
+            val s = socio ?: return@setOnClickListener
+            startActivity(Intent(this, CarnetActivity::class.java).putExtra("dni", s.dni))
+        }
+    }
 
-        findViewById<TextView>(R.id.txtNombreCompleto).text = "$nombre $apellido"
-        findViewById<TextView>(R.id.valDni).text = dni
-        findViewById<TextView>(R.id.valNombre).text = nombre
-        findViewById<TextView>(R.id.valApellido).text = apellido
-        findViewById<TextView>(R.id.valVencimiento).text = vencimiento
-        findViewById<TextView>(R.id.valApto).text = if (aptoFisico) "Sí" else "No"
-        findViewById<TextView>(R.id.valEstado).text = estado
-        findViewById<TextView>(R.id.valTelefono).text = telefono
-        findViewById<TextView>(R.id.valDireccion).text = direccion
-        findViewById<TextView>(R.id.valCorreo).text = email
+    // Se recarga al volver de "Editar socio" para mostrar los datos nuevos
+    override fun onResume() {
+        super.onResume()
+        val s = db.obtenerSocio(socioId)
+        if (s == null || !s.activo) {
+            finish()
+            return
+        }
+        socio = s
+        val estado = s.estado
+        findViewById<TextView>(R.id.txtNombreCompleto).text = s.nombreCompleto
+        findViewById<TextView>(R.id.valDni).text = s.dni
+        findViewById<TextView>(R.id.valNombre).text = s.nombre
+        findViewById<TextView>(R.id.valApellido).text = s.apellido
+        findViewById<TextView>(R.id.valVencimiento).text = Fechas.aVisible(s.fechaVencimiento)
+        findViewById<TextView>(R.id.valApto).text = if (s.aptoFisico) "Sí" else "No"
+        findViewById<TextView>(R.id.valTelefono).text = s.telefono
+        findViewById<TextView>(R.id.valDireccion).text = s.direccion
+        findViewById<TextView>(R.id.valCorreo).text = s.email
+
+        val valEstado = findViewById<TextView>(R.id.valEstado)
+        valEstado.text = estado
+        valEstado.setTextColor(Estados.color(estado))
 
         val badge = findViewById<TextView>(R.id.txtBadge)
         badge.text = estado
-        val color = when {
-            estado.equals("Vencido", ignoreCase = true) -> "#E53935"
-            estado.equals("Alerta", ignoreCase = true) -> "#F57C00"
-            else -> "#2E7D32"
-        }
-        badge.setBackgroundColor(Color.parseColor(color))
+        badge.setBackgroundColor(Estados.color(estado))
+    }
 
-        val colorTexto = when {
-            estado.equals("Vencido", ignoreCase = true) -> Color.parseColor("#E53935")
-            estado.equals("Alerta", ignoreCase = true) -> Color.parseColor("#F57C00")
-            else -> Color.parseColor("#2E7D32")
-        }
-        findViewById<TextView>(R.id.valEstado).setTextColor(colorTexto)
-
-        findViewById<TextView>(R.id.btnVolver).setOnClickListener {
-            startActivity(Intent(this, ListadoSociosActivity::class.java))
-        }
-
-        findViewById<Button>(R.id.btnEditar).setOnClickListener {
-            Toast.makeText(this, "Editar socio", Toast.LENGTH_SHORT).show()
-        }
-        findViewById<Button>(R.id.btnDarDeBaja).setOnClickListener {
-            Toast.makeText(this, "Dar de baja", Toast.LENGTH_SHORT).show()
-        }
-        findViewById<Button>(R.id.btnHistorial).setOnClickListener {
-            Toast.makeText(this, "Ver historial", Toast.LENGTH_SHORT).show()
-        }
-
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomNav.selectedItemId = R.id.nav_socios
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_inicio -> {
-                    startActivity(Intent(this, MenuActivity::class.java))
-                    true
-                }
-                R.id.nav_socios -> {
+    private fun confirmarBaja() {
+        val s = socio ?: return
+        AlertDialog.Builder(this)
+            .setTitle("Dar de baja")
+            .setMessage(
+                "¿Dar de baja a ${s.nombreCompleto}?\n\n" +
+                        "Dejará de aparecer en listados, vencimientos, carnet y cobros. " +
+                        "Su historial de pagos se conserva."
+            )
+            .setPositiveButton("Dar de baja") { _, _ ->
+                if (db.darDeBaja(s.id)) {
+                    Toast.makeText(this, "Socio dado de baja", Toast.LENGTH_SHORT).show()
                     finish()
-                    true
+                } else {
+                    Toast.makeText(this, "No se pudo dar de baja", Toast.LENGTH_SHORT).show()
                 }
-                R.id.nav_vencimiento -> {
-                    startActivity(Intent(this, VencimientosActivity::class.java))
-                    true
-                }
-                R.id.nav_perfil -> {
-                    startActivity(Intent(this, PerfilActivity::class.java))
-                    true
-                }
-                else -> false
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun mostrarHistorial() {
+        val s = socio ?: return
+        val pagos = db.listarPagosSocio(s.id)
+        val mensaje = if (pagos.isEmpty()) {
+            "Este socio todavía no registra pagos."
+        } else {
+            pagos.joinToString("\n\n") {
+                "${Fechas.aVisible(it.fechaPago)} · ${it.concepto}\n" +
+                        "${FormUtil.moneda(it.importe)} · ${it.medioPago}" +
+                        (if (it.cuotas > 1) " (${it.cuotas} cuotas)" else "")
             }
         }
+        AlertDialog.Builder(this)
+            .setTitle("Historial de ${s.nombreCompleto}")
+            .setMessage(mensaje)
+            .setPositiveButton("Cerrar", null)
+            .show()
     }
 }

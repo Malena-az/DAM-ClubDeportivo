@@ -1,51 +1,72 @@
 package com.clubdeportivo.app.consultas
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
+import com.clubdeportivo.app.BaseActivity
 import com.clubdeportivo.app.R
-import com.clubdeportivo.app.data.Datos
+import com.clubdeportivo.app.data.ClubDbHelper
+import com.clubdeportivo.app.data.Estados
+import com.clubdeportivo.app.data.Fechas
 import com.clubdeportivo.app.data.Socio
-import com.clubdeportivo.app.registro.MenuActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
-class VencimientosActivity : AppCompatActivity() {
+/**
+ * Listado diario de socios a vencer: los que vencen hoy y los ya vencidos,
+ * ordenados por fecha de vencimiento (ORDER BY en la consulta SQL).
+ */
+class VencimientosActivity : BaseActivity() {
 
+    private lateinit var db: ClubDbHelper
     private var expandirLista = false
+    private var todosVencidos: List<Socio> = emptyList()
+
     private lateinit var layoutLista: LinearLayout
+    private lateinit var layoutVacio: LinearLayout
     private lateinit var btnVerMas: Button
-    private lateinit var todosVencidos: List<Socio>
+    private lateinit var txtTituloLista: TextView
+    private lateinit var txtCantidad: TextView
+    private lateinit var txtCantidadVencidos: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_vencimientos)
+        configurarPantalla("Control de Vencimientos", R.id.nav_vencimiento)
+        db = ClubDbHelper.get(this)
 
-        val txtSinVencimientos = findViewById<TextView>(R.id.txtSinVencimientos)
-        val layoutVacio = findViewById<LinearLayout>(R.id.layoutVacio)
-        val txtTituloLista = findViewById<TextView>(R.id.txtTituloLista)
-        val txtCantidad = findViewById<TextView>(R.id.txtCantidad)
-        val txtFecha = findViewById<TextView>(R.id.txtFecha)
         layoutLista = findViewById(R.id.layoutListaVencimientos)
+        layoutVacio = findViewById(R.id.layoutVacio)
         btnVerMas = findViewById(R.id.btnVerMas)
+        txtTituloLista = findViewById(R.id.txtTituloLista)
+        txtCantidad = findViewById(R.id.txtCantidad)
+        txtCantidadVencidos = findViewById(R.id.txtCantidadVencidos)
 
-        val formato = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val hoy = formato.format(Date())
-        txtFecha.text = hoy
+        findViewById<TextView>(R.id.txtFecha).text = Fechas.aVisible(Fechas.hoy())
 
-        val vencenHoy = Datos.socios.filter { it.fechaVencimiento == hoy }
-        txtCantidad.text = vencenHoy.size.toString()
+        btnVerMas.setOnClickListener {
+            expandirLista = !expandirLista
+            mostrarItems()
+        }
+        findViewById<View>(R.id.btnRefrescar).setOnClickListener {
+            it.animate().rotationBy(360f).setDuration(400).start()
+            cargar()
+            Toast.makeText(this, "Lista actualizada", Toast.LENGTH_SHORT).show()
+        }
+    }
 
-        todosVencidos = Datos.socios
-            .filter { it.estado.equals("Vencido", ignoreCase = true) }
-            .sortedByDescending { parseFecha(it.fechaVencimiento) }
+    override fun onResume() {
+        super.onResume()
+        cargar()
+    }
+
+    private fun cargar() {
+        findViewById<TextView>(R.id.txtFecha).text = Fechas.aVisible(Fechas.hoy())
+        txtCantidad.text = db.contarVencenHoy().toString()
+        txtCantidadVencidos.text = db.contarVencidos().toString()
+        todosVencidos = db.listarVencimientos()
 
         if (todosVencidos.isEmpty()) {
             layoutVacio.visibility = View.VISIBLE
@@ -58,31 +79,6 @@ class VencimientosActivity : AppCompatActivity() {
             txtTituloLista.text = "Todos los vencimientos (${todosVencidos.size})"
             layoutLista.visibility = View.VISIBLE
             mostrarItems()
-
-            btnVerMas.setOnClickListener {
-                expandirLista = !expandirLista
-                mostrarItems()
-            }
-        }
-
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomNav.selectedItemId = R.id.nav_vencimiento
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_inicio -> {
-                    startActivity(Intent(this, MenuActivity::class.java))
-                    true
-                }
-                R.id.nav_socios -> {
-                    startActivity(Intent(this, ListadoSociosActivity::class.java))
-                    true
-                }
-                R.id.nav_perfil -> {
-                    startActivity(Intent(this, PerfilActivity::class.java))
-                    true
-                }
-                else -> false
-            }
         }
     }
 
@@ -93,15 +89,22 @@ class VencimientosActivity : AppCompatActivity() {
 
         for (socio in visibles) {
             val item = inflater.inflate(R.layout.item_vencimiento, layoutLista, false)
-            item.findViewById<TextView>(R.id.txtNombre).text = "${socio.nombre} ${socio.apellido}"
-            item.findViewById<TextView>(R.id.txtNumero).text = "N° Socio: ${socio.id.toString().padStart(4, '0')}"
-            item.findViewById<TextView>(R.id.txtEstado).text = socio.estado
+            val color = Estados.color(socio.estado)
+            item.findViewById<TextView>(R.id.txtNombre).text = socio.nombreCompleto
+            item.findViewById<TextView>(R.id.txtNumero).text = "N° Socio: ${socio.nroSocio}"
+            item.findViewById<TextView>(R.id.txtEstado).apply {
+                text = socio.estado
+                setBackgroundColor(color)
+            }
             item.findViewById<TextView>(R.id.txtDni).text = socio.dni
             item.findViewById<TextView>(R.id.txtNombreSolo).text = socio.nombre
             item.findViewById<TextView>(R.id.txtApellidoSolo).text = socio.apellido
-            item.findViewById<TextView>(R.id.txtVencimiento).text = socio.fechaVencimiento
+            item.findViewById<TextView>(R.id.txtVencimiento).text = Fechas.aVisible(socio.fechaVencimiento)
             item.findViewById<TextView>(R.id.txtApto).text = if (socio.aptoFisico) "Sí" else "No"
-            item.findViewById<TextView>(R.id.txtEstadoValor).text = socio.estado
+            item.findViewById<TextView>(R.id.txtEstadoValor).apply {
+                text = socio.estado
+                setTextColor(color)
+            }
             item.findViewById<TextView>(R.id.txtTelefono).text = socio.telefono
             item.findViewById<TextView>(R.id.txtDireccion).text = socio.direccion
             layoutLista.addView(item)
@@ -112,14 +115,6 @@ class VencimientosActivity : AppCompatActivity() {
             btnVerMas.text = if (expandirLista) "Ver menos" else "Ver más (${todosVencidos.size - 2} más)"
         } else {
             btnVerMas.visibility = View.GONE
-        }
-    }
-
-    private fun parseFecha(fecha: String): Date {
-        return try {
-            SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).parse(fecha) ?: Date(0)
-        } catch (e: Exception) {
-            Date(0)
         }
     }
 }

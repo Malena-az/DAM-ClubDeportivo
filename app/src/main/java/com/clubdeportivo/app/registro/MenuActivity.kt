@@ -4,62 +4,37 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import com.clubdeportivo.app.BaseActivity
 import com.clubdeportivo.app.R
-import com.clubdeportivo.app.consultas.ListadoSociosActivity
-import com.clubdeportivo.app.consultas.PerfilActivity
-import com.clubdeportivo.app.consultas.VencimientosActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.clubdeportivo.app.cobros.CobrarActividadActivity
+import com.clubdeportivo.app.cobros.CobrarCuotaActivity
+import com.clubdeportivo.app.consultas.CarnetActivity
+import com.clubdeportivo.app.data.ClubDbHelper
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-class MenuActivity : AppCompatActivity() {
+class MenuActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_menu)
+        configurarBottomNav(R.id.nav_inicio)
 
-        val txtFecha = findViewById<TextView>(R.id.txtFecha)
+        val usuario = ClubDbHelper.get(this).obtenerUsuario(com.clubdeportivo.app.data.Sesion.usuario)
+        findViewById<TextView>(R.id.txtSaludo).text = "Hola, ${usuario?.nombre ?: "Admin"}"
+
         val formato = SimpleDateFormat("d 'de' MMMM 'de' yyyy", Locale("es", "ES"))
-        txtFecha.text = formato.format(Date())
+        findViewById<TextView>(R.id.txtFecha).text = formato.format(Date())
 
-        findViewById<View>(R.id.cardRegistrarSocio).setOnClickListener {
-            startActivity(Intent(this, AltaSocioActivity::class.java))
-        }
-        findViewById<View>(R.id.cardRegistrarNoSocio).setOnClickListener {
-            startActivity(Intent(this, AltaNoSocioActivity::class.java))
-        }
-        findViewById<View>(R.id.cardCarnet).setOnClickListener {
-            startActivity(Intent(this, com.clubdeportivo.app.consultas.CarnetActivity::class.java))
-        }
-        findViewById<View>(R.id.cardCobrarCuota).setOnClickListener {
-            startActivity(Intent(this, com.clubdeportivo.app.cobros.CobrarCuotaActivity::class.java))
-        }
-        findViewById<View>(R.id.cardCobrarActividad).setOnClickListener {
-            startActivity(Intent(this, com.clubdeportivo.app.cobros.CobrarActividadActivity::class.java))
-        }
+        irA(R.id.cardRegistrarSocio, AltaSocioActivity::class.java)
+        irA(R.id.cardRegistrarNoSocio, AltaNoSocioActivity::class.java)
+        irA(R.id.cardCarnet, CarnetActivity::class.java)
+        irA(R.id.cardCobrarCuota, CobrarCuotaActivity::class.java)
+        irA(R.id.cardCobrarActividad, CobrarActividadActivity::class.java)
+    }
 
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomNav.selectedItemId = R.id.nav_inicio
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_inicio -> true
-                R.id.nav_socios -> {
-                    startActivity(Intent(this, ListadoSociosActivity::class.java))
-                    true
-                }
-                R.id.nav_vencimiento -> {
-                    startActivity(Intent(this, VencimientosActivity::class.java))
-                    true
-                }
-                R.id.nav_perfil -> {
-                    startActivity(Intent(this, PerfilActivity::class.java))
-                    true
-                }
-                else -> false
-            }
-        }
+    private fun irA(idCard: Int, destino: Class<*>) {
+        findViewById<View>(idCard).setOnClickListener { startActivity(Intent(this, destino)) }
     }
 }

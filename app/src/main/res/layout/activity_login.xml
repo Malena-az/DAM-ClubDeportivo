@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="24dp"
-    android:background="@color/gris">
+    android:background="@color/fondo_pantalla">
 
     <ImageView
         android:layout_width="120dp"
@@ -32,7 +32,7 @@
         android:textColor="@color/texto_principal"
         android:textColorHint="@color/texto_secundario"
         android:textAlignment="center"
-        android:background="@color/white"
+        android:background="@drawable/bg_campo"
         android:padding="12dp"
         android:layout_marginBottom="16dp" />
 
@@ -45,7 +45,7 @@
         android:textColor="@color/texto_principal"
         android:textColorHint="@color/texto_secundario"
         android:textAlignment="center"
-        android:background="@color/white"
+        android:background="@drawable/bg_campo"
         android:padding="12dp"
         android:layout_marginBottom="8dp" />
 

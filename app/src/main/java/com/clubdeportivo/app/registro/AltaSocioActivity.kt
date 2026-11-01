@@ -1,30 +1,43 @@
 package com.clubdeportivo.app.registro
 
 import android.app.DatePickerDialog
-import com.clubdeportivo.app.R
+import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
-import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import android.widget.Spinner
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
+import com.clubdeportivo.app.BaseActivity
+import com.clubdeportivo.app.R
+import com.clubdeportivo.app.cobros.CobrarCuotaActivity
+import com.clubdeportivo.app.data.ClubDbHelper
+import com.clubdeportivo.app.data.Fechas
+import com.clubdeportivo.app.data.Socio
+import com.clubdeportivo.app.util.dniRequerido
+import com.clubdeportivo.app.util.requerido
 import java.util.Calendar
 
-class AltaSocioActivity : AppCompatActivity() {
+/**
+ * Alta de socio. Si recibe el extra "socioId" funciona en modo edición
+ * (misma pantalla, datos precargados, el DNI no se puede cambiar).
+ */
+class AltaSocioActivity : BaseActivity() {
+
+    private lateinit var db: ClubDbHelper
+    private var socioEdicion: Socio? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_alta_socio)
+        db = ClubDbHelper.get(this)
 
-        val btnMenu = findViewById<Button>(R.id.btnMenu)
-        val btnGuardar = findViewById<Button>(R.id.btnGuardarSocio)
-        val btnCancelar = findViewById<Button>(R.id.btnCancelarSocio)
-        val btnVerificarDni = findViewById<Button>(R.id.btnVerificarDni)
+        val socioId = intent.getIntExtra("socioId", -1)
+        socioEdicion = if (socioId != -1) db.obtenerSocio(socioId) else null
+        val editando = socioEdicion != null
+
+        configurarPantalla(if (editando) "Editar socio" else "Alta socio", if (editando) R.id.nav_socios else R.id.nav_inicio)
 
         val etNombre = findViewById<EditText>(R.id.etNombre)
         val etApellido = findViewById<EditText>(R.id.etApellido)
@@ -32,227 +45,119 @@ class AltaSocioActivity : AppCompatActivity() {
         val etTelefono = findViewById<EditText>(R.id.etTelefono)
         val etEmail = findViewById<EditText>(R.id.etEmail)
         val etDireccion = findViewById<EditText>(R.id.etDireccion)
-        val etFechaNacimiento = findViewById<EditText>(R.id.etFechaNacimiento)
-        val cbAptoMedico = findViewById<CheckBox>(R.id.cbAptoMedico)
-        val etImporte = findViewById<EditText>(R.id.etImporte)
-        val spMedioPago = findViewById<Spinner>(R.id.spMedioPago)
-        val spCuotas = findViewById<Spinner>(R.id.spCuotas)
+        val etFechaNac = findViewById<EditText>(R.id.etFechaNacimiento)
+        val cbApto = findViewById<CheckBox>(R.id.cbAptoMedico)
+        val btnVerificar = findViewById<Button>(R.id.btnVerificarDni)
+        val btnGuardar = findViewById<Button>(R.id.btnGuardarSocio)
 
-        // Cargar opciones de los Spinners
-        val adapterMedioPago = ArrayAdapter.createFromResource(
-            this, R.array.medios_pago, android.R.layout.simple_spinner_item
-        )
-        adapterMedioPago.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spMedioPago.adapter = adapterMedioPago
-
-        val adapterCuotas = ArrayAdapter.createFromResource(
-            this, R.array.cuotas, android.R.layout.simple_spinner_item
-        )
-        adapterCuotas.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spCuotas.adapter = adapterCuotas
-
-        // Selector de fecha de nacimiento
-        etFechaNacimiento.setOnClickListener {
-            val calendario = Calendar.getInstance()
-            val anio = calendario.get(Calendar.YEAR)
-            val mes = calendario.get(Calendar.MONTH)
-            val dia = calendario.get(Calendar.DAY_OF_MONTH)
-
-            val datePicker = DatePickerDialog(
-                this,
-                { _, anioSeleccionado, mesSeleccionado, diaSeleccionado ->
-                    val fecha = String.format(
-                        "%02d/%02d/%04d",
-                        diaSeleccionado, mesSeleccionado + 1, anioSeleccionado
-                    )
-                    etFechaNacimiento.setText(fecha)
-                },
-                anio, mes, dia
-            )
-            datePicker.show()
+        socioEdicion?.let {
+            etNombre.setText(it.nombre); etApellido.setText(it.apellido); etDni.setText(it.dni)
+            etTelefono.setText(it.telefono); etEmail.setText(it.email); etDireccion.setText(it.direccion)
+            etFechaNac.setText(if (it.fechaNacimiento.isEmpty()) "" else Fechas.aVisible(it.fechaNacimiento))
+            cbApto.isChecked = it.aptoFisico
+            etDni.isEnabled = false                      // el DNI identifica al socio
+            btnVerificar.isEnabled = false
+            btnGuardar.text = "Guardar cambios"
         }
 
-        btnMenu.setOnClickListener {
-            finish()
+        etFechaNac.setOnClickListener {
+            val cal = Calendar.getInstance()
+            DatePickerDialog(this, { _, anio, mes, dia ->
+                etFechaNac.setText(String.format("%02d/%02d/%04d", dia, mes + 1, anio))
+                etFechaNac.error = null
+            }, cal.get(Calendar.YEAR) - 25, cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).apply {
+                datePicker.maxDate = System.currentTimeMillis()
+            }.show()
         }
 
-        btnVerificarDni.setOnClickListener {
-            val dni = etDni.text.toString().trim()
-            if (dni.isEmpty()) {
-                etDni.error = "Ingresa el DNI"
-                etDni.requestFocus()
-            } else if (!dni.matches(Regex("^[0-9]{7,8}$"))) {
-                etDni.error = "El DNI debe tener entre 7 y 8 dígitos"
+        btnVerificar.setOnClickListener {
+            val dni = etDni.dniRequerido() ?: return@setOnClickListener
+            if (db.existeDniSocio(dni)) {
+                etDni.error = "Ya existe un socio con ese DNI"
                 etDni.requestFocus()
             } else {
-                Toast.makeText(this, "DNI verificado correctamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "DNI disponible", Toast.LENGTH_SHORT).show()
             }
         }
 
-        btnCancelar.setOnClickListener {
-            finish()
-        }
+        findViewById<Button>(R.id.btnCancelarSocio).setOnClickListener { finish() }
 
         btnGuardar.setOnClickListener {
-            if (validarFormulario(
-                    etNombre, etApellido, etDni, etTelefono,
-                    etEmail, etDireccion, etFechaNacimiento,
-                    cbAptoMedico, etImporte, spMedioPago, spCuotas
-                )
-            ) {
-                mostrarResumen(
-                    etNombre, etApellido, etDni, etTelefono,
-                    etEmail, etDireccion, etFechaNacimiento,
-                    cbAptoMedico, etImporte, spMedioPago, spCuotas
-                )
+            // ---- validaciones: no deja guardar un formulario vacío o incompleto
+            val nombre = etNombre.requerido("Ingresá el nombre") ?: return@setOnClickListener
+            val apellido = etApellido.requerido("Ingresá el apellido") ?: return@setOnClickListener
+            val dni = etDni.dniRequerido() ?: return@setOnClickListener
+
+            val telefono = etTelefono.requerido("Ingresá el teléfono") ?: return@setOnClickListener
+            if (!telefono.matches(Regex("^[0-9]+$"))) {
+                etTelefono.error = "El teléfono solo debe contener números"
+                etTelefono.requestFocus()
+                return@setOnClickListener
             }
-        }
-    }
 
-    private fun mostrarResumen(
-        etNombre: EditText,
-        etApellido: EditText,
-        etDni: EditText,
-        etTelefono: EditText,
-        etEmail: EditText,
-        etDireccion: EditText,
-        etFechaNacimiento: EditText,
-        cbAptoMedico: CheckBox,
-        etImporte: EditText,
-        spMedioPago: Spinner,
-        spCuotas: Spinner
-    ) {
-        val resumen = """
-        Nombre: ${etNombre.text}
-        Apellido: ${etApellido.text}
-        DNI: ${etDni.text}
-        Teléfono: ${etTelefono.text}
-        Email: ${etEmail.text}
-        Dirección: ${etDireccion.text}
-        Fecha de nacimiento: ${etFechaNacimiento.text}
-        Apto médico: ${if (cbAptoMedico.isChecked) "Sí" else "No"}
-        Importe: $ ${etImporte.text}
-        Medio de pago: ${spMedioPago.selectedItem}
-        Cuotas: ${spCuotas.selectedItem}
-    """.trimIndent()
-
-        AlertDialog.Builder(this)
-            .setTitle("✅ Socio registrado con éxito")
-            .setMessage(resumen)
-            .setPositiveButton("Aceptar") { _, _ ->
-                finish()
+            val email = etEmail.requerido("Ingresá el email") ?: return@setOnClickListener
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                etEmail.error = "Ingresá un email válido"
+                etEmail.requestFocus()
+                return@setOnClickListener
             }
-            .setCancelable(false)
-            .show()
-    }
 
-    private fun validarFormulario(
-        etNombre: EditText,
-        etApellido: EditText,
-        etDni: EditText,
-        etTelefono: EditText,
-        etEmail: EditText,
-        etDireccion: EditText,
-        etFechaNacimiento: EditText,
-        cbAptoMedico: CheckBox,
-        etImporte: EditText,
-        spMedioPago: Spinner,
-        spCuotas: Spinner
-    ): Boolean {
+            val direccion = etDireccion.requerido("Ingresá la dirección") ?: return@setOnClickListener
+            val fechaNac = etFechaNac.requerido("Seleccioná la fecha de nacimiento") ?: return@setOnClickListener
+            if (!cbApto.isChecked) {
+                Toast.makeText(this, "Debe presentar el apto médico", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
 
-        val nombre = etNombre.text.toString().trim()
-        val apellido = etApellido.text.toString().trim()
-        val dni = etDni.text.toString().trim()
-        val telefono = etTelefono.text.toString().trim()
-        val email = etEmail.text.toString().trim()
-        val direccion = etDireccion.text.toString().trim()
-        val fechaNacimiento = etFechaNacimiento.text.toString().trim()
-        val importeTexto = etImporte.text.toString().trim()
+            val original = socioEdicion
+            if (original != null) {
+                val actualizado = original.copy(
+                    nombre = nombre, apellido = apellido, telefono = telefono, email = email,
+                    direccion = direccion, fechaNacimiento = Fechas.aIso(fechaNac), aptoFisico = true
+                )
+                if (db.actualizarSocio(actualizado)) {
+                    Toast.makeText(this, "Socio actualizado", Toast.LENGTH_SHORT).show()
+                    finish()
+                } else {
+                    Toast.makeText(this, "No se pudo actualizar el socio", Toast.LENGTH_SHORT).show()
+                }
+                return@setOnClickListener
+            }
 
-        if (nombre.isEmpty()) {
-            etNombre.error = "Ingresa el nombre"
-            etNombre.requestFocus()
-            return false
-        }
+            val nuevo = Socio(
+                id = 0, nombre = nombre, apellido = apellido, dni = dni, telefono = telefono,
+                direccion = direccion, email = email, fechaNacimiento = Fechas.aIso(fechaNac), aptoFisico = true
+            )
+            val idNuevo = db.insertarSocio(nuevo)
+            if (idNuevo == -1L) {
+                etDni.error = "Ya existe un socio con ese DNI"
+                etDni.requestFocus()
+                return@setOnClickListener
+            }
 
-        if (apellido.isEmpty()) {
-            etApellido.error = "Ingresa el apellido"
-            etApellido.requestFocus()
-            return false
-        }
+            // Socio ya guardado: se muestra el resumen y al aceptar se pasa al cobro de la primera cuota
+            val resumen = """
+                Nombre: $nombre
+                Apellido: $apellido
+                DNI: $dni
+                Teléfono: $telefono
+                Email: $email
+                Dirección: $direccion
+                Fecha de nacimiento: $fechaNac
+                Apto médico: Sí
+            """.trimIndent()
 
-        if (dni.isEmpty()) {
-            etDni.error = "Ingresa el DNI"
-            etDni.requestFocus()
-            return false
+            AlertDialog.Builder(this)
+                .setTitle("✅ Socio registrado con éxito")
+                .setMessage(resumen)
+                .setPositiveButton("Cobrar primera cuota") { _, _ ->
+                    startActivity(Intent(this, CobrarCuotaActivity::class.java).apply {
+                        putExtra("socioId", idNuevo.toInt())
+                    })
+                    finish()
+                }
+                .setCancelable(false)
+                .show()
         }
-        if (!dni.matches(Regex("^[0-9]{7,8}$"))) {
-            etDni.error = "El DNI debe tener entre 7 y 8 dígitos"
-            etDni.requestFocus()
-            return false
-        }
-
-        if (telefono.isEmpty()) {
-            etTelefono.error = "Ingresa el teléfono"
-            etTelefono.requestFocus()
-            return false
-        }
-        if (!telefono.matches(Regex("^[0-9]+$"))) {
-            etTelefono.error = "El teléfono solo debe contener números"
-            etTelefono.requestFocus()
-            return false
-        }
-
-        if (email.isEmpty()) {
-            etEmail.error = "Ingresa el email"
-            etEmail.requestFocus()
-            return false
-        }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            etEmail.error = "Ingresa un email válido"
-            etEmail.requestFocus()
-            return false
-        }
-
-        if (direccion.isEmpty()) {
-            etDireccion.error = "Ingresa la dirección"
-            etDireccion.requestFocus()
-            return false
-        }
-
-        if (fechaNacimiento.isEmpty()) {
-            etFechaNacimiento.error = "Selecciona la fecha de nacimiento"
-            etFechaNacimiento.requestFocus()
-            return false
-        }
-
-        if (!cbAptoMedico.isChecked) {
-            Toast.makeText(this, "Debe marcar el apto médico", Toast.LENGTH_SHORT).show()
-            return false
-        }
-
-        if (importeTexto.isEmpty()) {
-            etImporte.error = "Ingresa el importe"
-            etImporte.requestFocus()
-            return false
-        }
-        val importe = importeTexto.toDoubleOrNull()
-        if (importe == null || importe <= 0) {
-            etImporte.error = "El importe debe ser mayor a 0"
-            etImporte.requestFocus()
-            return false
-        }
-
-        if (spMedioPago.selectedItemPosition == 0) {
-            Toast.makeText(this, "Selecciona un medio de pago", Toast.LENGTH_SHORT).show()
-            return false
-        }
-
-        if (spCuotas.selectedItemPosition == 0) {
-            Toast.makeText(this, "Selecciona la cantidad de cuotas", Toast.LENGTH_SHORT).show()
-            return false
-        }
-
-        return true
     }
 }

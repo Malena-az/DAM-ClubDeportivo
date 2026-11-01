@@ -3,37 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/club_bg_gray"
+    android:background="@color/fondo_pantalla"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
-    <!-- Encabezado -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="16dp">
+    <include layout="@layout/layout_header" />
 
-        <TextView
-            android:id="@+id/btnVolver"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="←"
-            android:textColor="@color/black"
-            android:textSize="28sp" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:paddingEnd="28dp"
-            android:text="Perfil"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </LinearLayout>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -52,7 +28,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_tarjeta"
+                android:background="@color/white"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="16dp">
@@ -63,6 +39,7 @@
                     android:background="@drawable/bg_chip"
                     android:backgroundTint="@color/club_green"
                     android:gravity="center"
+                    android:id="@+id/tvPerfilInicial"
                     android:text="M"
                     android:textColor="@color/white"
                     android:textSize="22sp"
@@ -101,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_tarjeta"
+                android:background="@color/white"
                 android:orientation="vertical"
                 android:padding="16dp">
 
@@ -117,6 +94,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
                     android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_dni" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -142,6 +125,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_persona" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -167,6 +156,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_persona" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -192,6 +187,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_calendario" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -217,6 +218,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_telefono" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -242,6 +249,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_ubicacion" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -267,6 +280,12 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_email" />
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -287,7 +306,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:background="@drawable/bg_tarjeta"
+            android:background="@color/white"
             android:orientation="vertical"
             android:padding="16dp">
 
@@ -312,36 +331,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Cambiar contraseña"
-                    android:textColor="@color/black" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="›"
-                    android:textColor="@color/black"
-                    android:textSize="22sp" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/club_hint" />
-
-            <!-- Configuración -->
-            <LinearLayout
-                android:id="@+id/accionConfig"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Configuración"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -385,15 +374,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Barra inferior (de Malena, sin cambios) -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:itemIconTint="@color/bottom_nav_color"
-        app:itemTextColor="@color/bottom_nav_color"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu" />
+    <include layout="@layout/layout_bottom_nav" />
 
 </LinearLayout>

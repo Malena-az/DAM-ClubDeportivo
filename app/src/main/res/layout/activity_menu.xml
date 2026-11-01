@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/fondo_medio">
+    android:background="@color/fondo_pantalla">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -21,6 +21,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/txtSaludo"
                 android:text="Hola, Admin"
                 android:textSize="24sp"
                 android:textStyle="bold"
@@ -216,14 +217,6 @@
         </LinearLayout>
     </ScrollView>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:itemIconTint="@color/bottom_nav_color"
-        app:itemTextColor="@color/bottom_nav_color"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu" />
+    <include layout="@layout/layout_bottom_nav" />
 
 </LinearLayout>

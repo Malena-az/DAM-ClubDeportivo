@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Carpetas desde las que se puede abrir un PDF con otra app (FileProvider) -->
+<paths>
+    <external-files-path name="documentos" path="Documents/" />
+    <files-path name="interno" path="." />
+</paths>

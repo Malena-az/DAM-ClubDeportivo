@@ -4,98 +4,63 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
-import android.view.View
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.clubdeportivo.app.BaseActivity
 import com.clubdeportivo.app.R
-import com.clubdeportivo.app.data.Datos
-import com.clubdeportivo.app.data.Socio
-import com.clubdeportivo.app.registro.MenuActivity
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.clubdeportivo.app.data.ClubDbHelper
 
-class ListadoSociosActivity : AppCompatActivity() {
+class ListadoSociosActivity : BaseActivity() {
 
+    private lateinit var db: ClubDbHelper
     private lateinit var adapter: SocioAdapter
+    private lateinit var edtBuscar: EditText
     private lateinit var txtMostrando: TextView
     private lateinit var txtSinResultados: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_listado_socios)
+        configurarPantalla("Listado de Socios", R.id.nav_socios)
+        db = ClubDbHelper.get(this)
 
-        val rvSocios = findViewById<RecyclerView>(R.id.rvSocios)
-        val edtBuscar = findViewById<EditText>(R.id.edtBuscar)
+        edtBuscar = findViewById(R.id.edtBuscar)
         txtMostrando = findViewById(R.id.txtMostrando)
         txtSinResultados = findViewById(R.id.txtSinResultados)
 
-        findViewById<Button>(R.id.btnVolver).setOnClickListener {
-            startActivity(Intent(this, MenuActivity::class.java))
+        adapter = SocioAdapter(emptyList()) { socio ->
+            startActivity(Intent(this, DetalleSocioActivity::class.java).apply {
+                putExtra("socioId", socio.id)
+            })
+        }
+        findViewById<RecyclerView>(R.id.rvSocios).apply {
+            layoutManager = LinearLayoutManager(this@ListadoSociosActivity)
+            adapter = this@ListadoSociosActivity.adapter
         }
 
-        adapter = SocioAdapter(Datos.socios.toList()) { socio ->
-            val intent = Intent(this, DetalleSocioActivity::class.java)
-            intent.putExtra("nombre", socio.nombre)
-            intent.putExtra("apellido", socio.apellido)
-            intent.putExtra("dni", socio.dni)
-            intent.putExtra("telefono", socio.telefono)
-            intent.putExtra("direccion", socio.direccion)
-            intent.putExtra("email", socio.email)
-            intent.putExtra("aptoFisico", socio.aptoFisico)
-            intent.putExtra("estado", socio.estado)
-            intent.putExtra("fechaVencimiento", socio.fechaVencimiento)
-            startActivity(intent)
-        }
-        rvSocios.layoutManager = LinearLayoutManager(this)
-        rvSocios.adapter = adapter
-        actualizarMostrando(adapter.itemCount)
-
+        // Filtra mientras se escribe (DNI, nombre o apellido) y también con el botón Buscar
         edtBuscar.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                val texto = s.toString().trim().lowercase()
-                val filtrados: List<Socio> = if (texto.isEmpty()) {
-                    Datos.socios.toList()
-                } else {
-                    Datos.socios.filter {
-                        it.dni.contains(texto) ||
-                                it.nombre.lowercase().contains(texto) ||
-                                it.apellido.lowercase().contains(texto)
-                    }
-                }
-                adapter.actualizar(filtrados)
-                actualizarMostrando(filtrados.size)
-                txtSinResultados.visibility = if (filtrados.isEmpty()) View.VISIBLE else View.GONE
-            }
-
+            override fun afterTextChanged(s: Editable?) = filtrar()
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
-
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
-        bottomNav.selectedItemId = R.id.nav_socios
-        bottomNav.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_inicio -> {
-                    startActivity(Intent(this, MenuActivity::class.java))
-                    true
-                }
-                R.id.nav_vencimiento -> {
-                    startActivity(Intent(this, VencimientosActivity::class.java))
-                    true
-                }
-                R.id.nav_perfil -> {
-                    startActivity(Intent(this, PerfilActivity::class.java))
-                    true
-                }
-                else -> false
-            }
-        }
+        findViewById<Button>(R.id.btnBuscar).setOnClickListener { filtrar() }
     }
 
-    private fun actualizarMostrando(cantidad: Int) {
-        txtMostrando.text = "Mostrando $cantidad socios"
+    // Se recarga al volver (por si se editó o se dio de baja un socio)
+    override fun onResume() {
+        super.onResume()
+        filtrar()
+    }
+
+    private fun filtrar() {
+        val socios = db.listarSocios(edtBuscar.text.toString())
+        adapter.actualizar(socios)
+        txtMostrando.text = "Mostrando ${socios.size} socios"
+        txtSinResultados.visibility = if (socios.isEmpty()) View.VISIBLE else View.GONE
     }
 }
