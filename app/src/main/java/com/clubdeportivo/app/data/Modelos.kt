@@ -31,6 +31,11 @@ data class Socio(
     val activo: Boolean = true
 ) {
     val estado: String get() = Fechas.estado(fechaVencimiento)
+    /**
+     * La cuota está al día cuando todavía falta más de 3 días para el vencimiento.
+     * Desde 3 días antes (estado Alerta), el día del vencimiento y después, se puede cobrar la próxima.
+     */
+    val cuotaAlDia: Boolean get() = estado == Estados.ACTIVO
     val nombreCompleto: String get() = "$nombre $apellido"
     val nroSocio: String get() = id.toString().padStart(4, '0')
 }

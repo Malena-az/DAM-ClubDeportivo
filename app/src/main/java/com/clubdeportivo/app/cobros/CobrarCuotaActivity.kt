@@ -11,6 +11,7 @@ import android.widget.RadioGroup
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.clubdeportivo.app.BaseActivity
 import com.clubdeportivo.app.R
 import com.clubdeportivo.app.data.ClubDbHelper
@@ -120,6 +121,20 @@ class CobrarCuotaActivity : BaseActivity() {
         val socio = socioActual
         if (socio == null) {
             Toast.makeText(this, "Primero buscá un socio por DNI", Toast.LENGTH_SHORT).show()
+            return
+        }
+        // Evita cobrar dos veces el mismo período: si la cuota está al día no se registra otro pago
+        if (socio.cuotaAlDia) {
+            AlertDialog.Builder(this)
+                .setTitle("Cuota ya registrada")
+                .setMessage(
+                    "Ya se realizó el registro de la cuota de ${socio.nombreCompleto}.\n\n" +
+                            "Vence el ${Fechas.aVisible(socio.fechaVencimiento)}. " +
+                            "El próximo pago se puede registrar a partir del " +
+                            "${Fechas.aVisible(Fechas.sumarDias(socio.fechaVencimiento, -3))}."
+                )
+                .setPositiveButton("Aceptar", null)
+                .show()
             return
         }
         if (spMedioPago.selectedItemPosition == 0) {

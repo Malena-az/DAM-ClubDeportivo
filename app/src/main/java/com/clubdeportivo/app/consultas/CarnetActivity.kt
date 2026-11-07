@@ -11,11 +11,16 @@ import com.clubdeportivo.app.R
 import com.clubdeportivo.app.data.ClubDbHelper
 import com.clubdeportivo.app.data.Estados
 import com.clubdeportivo.app.data.Fechas
+import com.clubdeportivo.app.data.Sesion
 import com.clubdeportivo.app.data.Socio
 import com.clubdeportivo.app.util.PdfUtil
 import com.clubdeportivo.app.util.dniRequerido
 
-/** El empleado busca al socio por DNI y ve (o descarga) su carnet. Los datos salen de la base. */
+/**
+ * Muestra siempre el carnet de quien está usando la app (el socio cuyo DNI coincide con el
+ * del usuario logueado). El buscador por DNI permite ver el carnet de cualquier otro socio;
+ * con el buscador vacío se vuelve al carnet propio. Los datos salen de la base.
+ */
 class CarnetActivity : BaseActivity() {
 
     private lateinit var txtSinResultados: TextView
@@ -32,18 +37,27 @@ class CarnetActivity : BaseActivity() {
         txtSinResultados = findViewById(R.id.txtSinResultados)
         layoutCarnet = findViewById(R.id.layoutCarnet)
         btnDescargar = findViewById(R.id.btnDescargar)
-        mostrarCarnet(null, mostrarMensaje = false)
+        // Carnet del usuario que está usando la app (se busca por el DNI de su usuario)
+        val carnetPropio: Socio? = db.obtenerUsuario(Sesion.usuario)?.let { db.buscarSocioPorDni(it.dni) }
 
         val edtBuscar = findViewById<EditText>(R.id.edtBuscarDni)
         findViewById<Button>(R.id.btnBuscarCarnet).setOnClickListener {
+            if (edtBuscar.text.toString().isBlank()) {
+                // Buscador vacío: vuelve al carnet propio
+                mostrarCarnet(carnetPropio, mostrarMensaje = false)
+                return@setOnClickListener
+            }
             val dni = edtBuscar.dniRequerido() ?: return@setOnClickListener
             mostrarCarnet(db.buscarSocioPorDni(dni), mostrarMensaje = true)
         }
 
-        // Llegada desde el detalle de un socio: ya viene el DNI
-        intent.getStringExtra("dni")?.let { dniRecibido ->
+        val dniRecibido = intent.getStringExtra("dni")
+        if (dniRecibido != null) {
+            // Llegada desde el detalle de un socio: ya viene el DNI
             edtBuscar.setText(dniRecibido)
             mostrarCarnet(db.buscarSocioPorDni(dniRecibido), mostrarMensaje = true)
+        } else {
+            mostrarCarnet(carnetPropio, mostrarMensaje = false)
         }
 
         btnDescargar.setOnClickListener {

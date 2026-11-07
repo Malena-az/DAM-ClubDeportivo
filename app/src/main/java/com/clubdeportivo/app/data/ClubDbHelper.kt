@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class ClubDbHelper private constructor(context: Context) :
-    SQLiteOpenHelper(context.applicationContext, "club_deportivo.db", null, 1) {
+    SQLiteOpenHelper(context.applicationContext, "club_deportivo.db", null, 3) {
 
     companion object {
         const val CUOTA_MENSUAL = "Cuota mensual"
@@ -89,8 +89,8 @@ class ClubDbHelper private constructor(context: Context) :
         db.execSQL("INSERT INTO precios (concepto, tipo, importe, dias) VALUES ('Tenis','ACTIVIDAD',4500,0)")
         db.execSQL("INSERT INTO precios (concepto, tipo, importe, dias) VALUES ('Pilates','ACTIVIDAD',4800,0)")
 
-        // Socios de prueba. Los vencimientos son relativos a la fecha de instalación
-        // para que siempre haya activos, en alerta, vencidos y uno que vence hoy.
+        // Socios de prueba. Los vencimientos son relativos a la fecha de instalación, así que al
+        // instalar la app siempre arranca con: 4 activos, 2 en alerta (uno de ellos vence hoy) y 3 vencidos.
         data class Seed(val n: String, val a: String, val dni: String, val tel: String,
                         val dir: String, val mail: String, val offset: Int)
         val seeds = listOf(
@@ -99,7 +99,11 @@ class ClubDbHelper private constructor(context: Context) :
             Seed("Ana", "Gomez", "34567890", "1189012345", "San Martín 654", "ana@gmail.com", 60),
             Seed("Mauricio", "Martinez", "27987654", "1156789012", "Santa Fe 1456", "mauricio@gmail.com", -25),
             Seed("Sofia", "Fernandez", "38765432", "1178901234", "Cordoba 789", "sofia@gmail.com", 2),
-            Seed("Carlos", "Perez", "20123456", "1167890123", "Lavalle 789", "carlos@gmail.com", 0)
+            Seed("Carlos", "Perez", "20123456", "1167890123", "Lavalle 789", "carlos@gmail.com", 0),
+            // La usuaria de prueba (admin) también es socia: así su carnet aparece al abrir la pantalla
+            Seed("María", "López", "95345276", "1167864568", "Av. Rivadavia", "maria@gmail.com", 25),
+            Seed("Lucia", "Torres", "30456123", "1145001122", "Sarmiento 450", "lucia@gmail.com", -10),
+            Seed("Pedro", "Sosa", "33987456", "1133445566", "Alsina 980", "pedro@gmail.com", 40)
         )
         for (s in seeds) {
             val venc = Fechas.sumarDias(hoy, s.offset)

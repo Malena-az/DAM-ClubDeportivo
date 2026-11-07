@@ -76,6 +76,7 @@ class PerfilActivity : BaseActivity() {
                 val mensaje = when {
                     actual.isEmpty() || nueva.isEmpty() || repetir.isEmpty() -> "Completá los tres campos"
                     nueva.length < 4 -> "La contraseña nueva debe tener al menos 4 caracteres"
+                    nueva == actual -> "La contraseña nueva no puede ser igual a la actual"
                     nueva != repetir -> "Las contraseñas nuevas no coinciden"
                     !db.cambiarPassword(Sesion.usuario, actual, nueva) -> "La contraseña actual es incorrecta"
                     else -> "Contraseña actualizada"
